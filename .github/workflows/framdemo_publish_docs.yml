@@ -1,0 +1,20 @@
+name: Deploy fram-demo Documentation
+
+on:
+#  push:
+#    branches:
+#      - main
+#    paths:
+#      - 'docs/**'
+#      - 'framdemo/**'
+#      - 'mkdocs.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy-docs:
+    uses: ./.github/workflows/template_publish_docs.yml
+    permissions:
+      contents: write
+    with:
+      package_name: 'framdemo'
+      source_paths: '["docs/**", "framdemo/**", "mkdocs.yml"]'
