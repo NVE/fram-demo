@@ -1,0 +1,18 @@
+Countries included,Modelling - 1st model run,Modelling - 2nd model run
+Norway,endogenous/aggregated,endogenous/dissaggregated
+Sweden,endogenous/aggregated,endogenous/dissaggregated
+Finland,endogenous/aggregated,endogenous/dissaggregated
+Denmark,endogenous/aggregated,endogenous/dissaggregated
+Netherlands,endogenous/aggregated,exogenous
+Germany,endogenous/aggregated,exogenous
+UK,endogenous/aggregated,exogenous
+Poland,endogenous/aggregated,exogenous
+Lithuania,endogenous/aggregated,exogenous
+Estonia,endogenous/aggregated,exogenous
+Latvia,exogenous,not included
+France,exogenous,not included
+Belgium,exogenous,not included
+Switzerland,exogenous,not included
+Austria,exogenous,not included
+Czech Republic,exogenous,not included
+Slovakia,exogenous,not included
