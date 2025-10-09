@@ -1,0 +1,163 @@
+def demo_3_solve_model():
+    """
+    Solve model.
+    1. Read populated model from populate model demo from disk.
+    2. Aggregate power nodes in model to elspot areas.
+    3. Create a JulES solver object.
+    4. Configure JulES.
+    5. Solve the model with JulES.
+    """
+    from datetime import timedelta
+
+    import numpy as np
+    from framcore import Model
+    from framcore.aggregators import HydroAggregator, NodeAggregator
+    from framcore.timeindexes import ModelYear, OneYearProfileTimeIndex, WeeklyIndex
+    from framcore.timevectors import ListTimeVector
+    from framjules import JulES
+
+    import framdemo.demo_utils as du
+
+    model_year = ModelYear(2023)
+    first_weather_year = 1991
+    num_weather_years = 3
+    weekly_index = WeeklyIndex(first_weather_year, num_weather_years)
+
+    # Read populated model from populate model demo from disk.
+    model: Model = du.load(du.DEMO_FOLDER / "populated_model.pickle")
+
+    # Aggregate power nodes in model to elspot areas.
+    node_aggregator = NodeAggregator("Power", "elspot", model_year, weekly_index)
+    node_aggregator.aggregate(model)
+
+    # Make a release_capacity_profile to further restrict the release capacity of the aggregated hydropower plants.
+    values = np.array([0.93, 0.88, 0.89, 0.90])
+    timeindex = OneYearProfileTimeIndex(period_duration=timedelta(weeks=13), is_52_week_years=True)
+    release_capacity_profile = ListTimeVector(timeindex, values, unit=None, is_max_level=None, is_zero_one_profile=True)
+
+    # Aggregate hydro power plants in model to elspot areas.
+    #   HydroAggregator will create one run-of-river hydropower module and one reservoir hydropower module per elspot area.
+    #   We use different aggregations for Norway and for Sweden and Finland.
+    #   We use a ror_threshold of 0.6 for Norway and 0.38 for Sweden and Finland, which indicates what regulation factor
+    #       a hydropower plant must have to be grouped as a reservoir hydropower plant.
+    hydro_aggregator_norway = HydroAggregator(
+        "EnergyEqDownstream",
+        model_year,
+        weekly_index,
+        ror_threshold=0.6,
+        metakey_power_node="Country",
+        power_node_members=["Norway"],
+        release_capacity_profile=release_capacity_profile,
+    )
+    hydro_aggregator_norway.aggregate(model)
+
+    hydro_aggregator_sweden_finland = HydroAggregator(
+        "EnergyEqDownstream",
+        model_year,
+        weekly_index,
+        ror_threshold=0.38,
+        metakey_power_node="Country",
+        power_node_members=["Sweden", "Finland"],
+        release_capacity_profile=release_capacity_profile,
+    )
+    hydro_aggregator_sweden_finland.aggregate(model)
+
+    # Save aggregated model to disk so we can use it later
+    du.save(model, path=du.DEMO_FOLDER / "aggregated_model.pickle")
+
+    # Create a JulES solver object.
+    jules = JulES()
+
+    # ----- Configure JulES ------
+
+    # Get object to configure JulES
+    config = jules.get_config()
+
+    # Configure serial simulation
+    #   Use num_weather_years weather years from first_weather_year
+    #   to represent weather uncertainty
+    #   Simulate model year 2025 for the first weather year
+    config.set_simulation_mode_serial()
+    config.set_weather_years(first_weather_year, num_weather_years)
+    config.set_data_period(model_year)
+    config.set_simulation_years(first_weather_year, num_weather_years)
+
+    # JulES can use this many cpu cores
+    config.set_num_cpu_cores(8)
+
+    # JulES shall write files to this folder
+    config.set_solve_folder(du.DEMO_FOLDER / "base")
+
+    # Get object to configure time resolution
+    time_resolution = config.get_time_resolution()
+
+    # Configure clearing problem
+    #   6-day horizon
+    #   48 3-hour market periods
+    #   3 2-day storage period
+    time_resolution.set_clearing_market_minutes(3 * 60)
+    time_resolution.set_clearing_storage_minutes(2 * 24 * 60)
+    time_resolution.set_clearing_days(6)
+
+    # Configure short term prognosis problem
+    #   1-day horizon
+    #   4 6-hour market periods
+    #   1 1-day storage periods
+    time_resolution.set_short_market_minutes(6 * 60)
+    time_resolution.set_short_storage_minutes(24 * 60)
+    time_resolution.set_short_days(1)
+
+    # Configure medium and long term prognosis problem
+    # and long term storage end value problem
+    #   Total lookahead horizon must be at least 4 years
+    #   Long term storage periods should be around 6 weeks long
+    #   Medium term horizon should be around 26 weeks long
+    #   Long term horizon for end value problems should be around 3 years
+    time_resolution.set_target_lookahead_days(4 * 365)
+    time_resolution.set_target_long_storage_days(6 * 7)
+    time_resolution.set_target_med_days(26 * 7)
+    time_resolution.set_target_ev_days(3 * 365)
+
+    # JulES can wait this many days between calculation
+    # of opportunity cost of long term storage
+    config.set_skipmax_days(21)
+
+    # JulES shall use aggregated hydro power in price prognosis problems used to
+    # HydroAggregator will create one run-of-river hydro plant and one hydro plant
+    # with reservoir for each power market zone
+    # hydro_aggregator = HydroAggregator("EnergyEqDownstream", model_year, weekly_index)
+    # config.set_short_term_aggregations([hydro_aggregator])
+
+    # JulES shall use EUR as currency (e.g. for prices)
+    config.set_currency("EUR")
+
+    # JulES shall convert to these units for input and output
+    #   We set Power as default so all other energy commodities (35 more)
+    #   can use the same units as Power.
+    #
+    #   We must set units for Hydro and CO2 since these commodities
+    #   need different units than Power.
+    #
+    #   For CO2, we only need to set stock unit, because this commodity
+    #   is only used for exogenous nodes.
+    #
+    #   For more information about stock and flow, see: https://en.wikipedia.org/wiki/Stock_and_flow
+    config.set_commodity_units(commodity="Power", stock_unit="GWh", flow_unit="MW", is_default=True)
+    config.set_commodity_units(commodity="Hydro", stock_unit="Mm3", flow_unit="m3/s")
+    config.set_commodity_units(commodity="CO2", stock_unit="t")
+
+    # Install the git branch "redesign_mfw" for both JulES and TuLiPa
+    config.set_jules_version(jules_branch="master", tulipa_branch="redesign_mfw")
+
+    # Tell JulES where to find Julia and where to install JulES
+    if du.JULIA_PATH_EXE is not None:
+        config.set_julia_exe_path(du.JULIA_PATH_EXE)
+    config.set_julia_env_path(du.DEMO_FOLDER / "julia_env")
+    config.set_julia_depot_path(du.DEMO_FOLDER / "julia_depot")
+
+    # Solve the model with JulES
+    jules.solve(model)
+
+
+if __name__ == "__main__":
+    demo_3_solve_model()

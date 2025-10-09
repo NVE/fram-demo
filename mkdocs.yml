@@ -1,0 +1,58 @@
+site_name: FRAM demo
+site_author: NVE
+site_description: >-
+  FRAM demo documentation site
+
+repo_url: https://github.com/NVE/fram-demo
+repo_name: NVE/fram-demo
+
+theme:
+  name: "material"
+  icon:
+    repo: fontawesome/brands/github    
+
+nav:
+  - index.md
+  - how_to_run_demo.md
+  #- what_demo_includes.md - #TODO: denne må legges tilbake når two-staged er klar
+  - reference.md
+
+markdown_extensions:
+- tables
+- attr_list
+
+plugins:
+  - mkdocstrings:
+     handlers:
+        python:
+          options:  
+            show_submodules: true
+            show_root_heading: true
+            show_root_full_path: true
+            show_signature_annotations: true
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            show_source: true
+  - mike
+  - search
+  - macros
+  - table-reader
+
+
+extra:
+  version:
+    provider: mike
+  juleslinks:
+      jules: https://github.com/NVE/JulES/
+      julia: https://julialang.org/
+  framlinks:
+    nve: https://www.nve.no/
+    fram: https://nve.github.io/fram/
+    core: https://nve.github.io/fram-core/
+    data: https://nve.github.io/fram-data/
+    demo: https://nve.github.io/fram-demo/
+    julesAPI: https://nve.github.io/fram-jules/
+    dataset: https://nve.github.io/fram-dataset/
+    pypicore: https://pypi.org/project/fram-data
+    pypidata: https://pypi.org/project/fram-data
+    pypijules: https://pypi.org/project/fram-jules

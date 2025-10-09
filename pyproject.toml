@@ -1,0 +1,43 @@
+[project]
+name = "fram-demo"
+version = "0.1.0a1"
+description = ""
+authors = [
+    {name = "The Norwegian Water Resources and Energy Directorate", email = "fram@nve.no"}
+]
+license = "LICENSE.md"
+readme = "README.md"
+requires-python = ">=3.11,<4"
+
+dependencies = [
+    "fram-core (>=0.1.0a1)",
+    "fram-data (>=0.1.0a1)",
+    "fram-jules (>=0.1.0a1)",
+    "matplotlib (>=3.10.6)",
+    "setuptools (>=80.9.0,<81.0.0)",
+    "tables (>=3.10.2)",
+    "streamlit (>=1.49.1)",
+    "plotly (>=6.3.0)",
+    "rich (>=14.1.0)",
+    "ipykernel (>=6.30.1,<7.0.0)",
+    "pybrowsers (>=1.3.1,<2.0.0)"
+]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+package-mode = true
+packages = [{include = "framdemo"}]
+
+[tool.poetry.group.docs]
+optional = true
+
+[tool.poetry.group.docs.dependencies]
+mkdocs = "^1.6.1"
+mkdocstrings-python = "^1.18.2"
+mkdocs-material = "^9.6.18"
+mike = "^2.1.3"
+mkdocs-macros-plugin = "^1.3.9"
+mkdocs-table-reader-plugin = "^3.1.0"
