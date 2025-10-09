@@ -2,17 +2,22 @@ def demo_7_get_data():
     """Writes results to h5 files that will be sent to dashboard."""
     import numpy as np
     import pandas as pd
+    import datetime
+
     from framcore import Model
     from framcore.aggregators import HydroAggregator, NodeAggregator
     from framcore.components import HydroModule, Node
     from framcore.events import send_info_event, send_warning_event
+    from framcore.expressions import get_level_value
     from framcore.querydbs import CacheDB
-    from framcore.timeindexes import AverageYearRange, DailyIndex, ModelYear
+    from framcore.timeindexes import AverageYearRange, DailyIndex, ModelYear, ProfileTimeIndex
     from framcore.utils import get_regional_volumes
+
     from framjules import JulES
 
     # import code written only for this demo (common names and useful functions)
     import framdemo.demo_utils as du
+
 
     # output file paths
     h5_file_path_prices = du.DEMO_FOLDER / "dashboard_prices.h5"
@@ -30,9 +35,7 @@ def demo_7_get_data():
     # read configured jules solver used in demo 3 from disk
     jules: JulES = du.load(du.DEMO_FOLDER / solve_names[0] / "solver.pickle")
 
-    # Make a few configurations
-    #   Where to save files
-    #   To reuse dependencies already installed in demo 3
+    # get info from config
     config = jules.get_config()
     first_simulation_year, num_simulation_years = config.get_simulation_years()
     currency = config.get_currency()
@@ -157,7 +160,7 @@ def demo_7_get_data():
 
             if solve_name != "detailed":
                 model.disaggregate()
-                
+
             node_aggregator = NodeAggregator("Power", "Country", data_period, daily_index)
             node_aggregator.aggregate(model)
             hydro_aggregator = HydroAggregator("EnergyEqDownstream", data_period, daily_index)
@@ -203,5 +206,140 @@ def demo_7_get_data():
     send_info_event(None, message=f"Saved hydro data to {h5_file_path_hydro}")
 
 
+    # detailed hydro data
+     
+    # input solve name and file paths
+    solve_name = "detailed"
+
+    solve_dir = du.DEMO_FOLDER / solve_name
+    solver_path = solve_dir / "solver.pickle"
+    model_path = solve_dir / "model.pickle"
+
+    if not (solve_dir.is_dir() and solver_path.is_file() and model_path.is_file()):
+        return
+
+    # output file paths
+    output_file_path = du.DEMO_FOLDER / "dashboard_detailed_hydro.h5"
+
+    # get info from configured jules solver
+    jules: JulES = du.load(solver_path)
+    config = jules.get_config()
+    first_simulation_year, num_simulation_years = config.get_simulation_years()
+    currency = config.get_currency()
+    clearing_market_minutes = config.get_time_resolution().get_clearing_market_minutes()
+
+    # derive query inputs
+    data_period: ModelYear = config.get_data_period()
+    model_year = data_period.get_start_time().isocalendar().year
+    data_dim = ModelYear(model_year)
+    scen_dim_yr = AverageYearRange(first_simulation_year, num_simulation_years)
+    scen_dim_market = ProfileTimeIndex(first_simulation_year, num_simulation_years, period_duration=datetime.timedelta(minutes=clearing_market_minutes), is_52_week_years=False)
+
+    # get model
+    model: Model = du.load(du.DEMO_FOLDER / solve_name / "model.pickle")
+    db = CacheDB(model)
+    data = model.get_data()
+
+    # create module_df
+    send_info_event(demo_7_get_data, "creating module_df")
+    eneq_dict = dict()
+    rows = []
+    for key, value in data.items():
+        if not isinstance(value, HydroModule):
+            continue
+        generator = value.get_generator()
+        if generator is not None:
+            x = float(generator.get_production().get_scenario_vector(db, scen_dim_yr, data_dim, "GWh/year")[0])
+            rows.append((key, "ProductionGWhPerYear", x))
+        pump = value.get_pump()
+        if pump is not None:
+            x = float(pump.get_power_consumption().get_scenario_vector(db, scen_dim_yr, data_dim, "GWh/year")[0])
+            rows.append((key, "PumpConsumptionGWhPerYear", x))
+        reservoir = value.get_reservoir()
+        if reservoir is None:
+            continue
+        eneq = value.get_meta("EnergyEqDownstream")
+        if eneq is None:
+            continue
+        eneq_kwh_per_m3 = get_level_value(eneq.get_value(), db, "kWh/m3", data_dim, scen_dim_yr, is_max=False)
+        if eneq_kwh_per_m3 <= 0:
+            continue
+        eneq_dict[key] = eneq_kwh_per_m3
+        reservoir_cap_mm3 = float(reservoir.get_capacity().get_scenario_vector(db, scen_dim_yr, data_dim, "Mm3").max())
+        reservoir_cap_gwh = eneq_kwh_per_m3 * reservoir_cap_mm3
+        if reservoir_cap_mm3 <= 0:
+            continue
+        # TODO: replace dummy data with hydro_module.get_scenario_vector call
+        water_value = 50
+        # water_value = value.get_water_value().get_scenario_vector(db, scen_dim_yr, data_dim, f"{currency}/m3")
+        water_value = water_value / eneq_kwh_per_m3 # EUR/m3 to EUR/kWh
+        water_value = water_value * 1000.0          # EUR/kWh to EUR/MWh
+        rows.append((key, "ReservoirCapacityMm3", reservoir_cap_mm3))
+        rows.append((key, "ReservoirCapacityGWh", reservoir_cap_gwh))
+        rows.append((key, "EnergyEqDownstream", eneq_kwh_per_m3))
+        rows.append((key, "WaterValueEURPerMWh", water_value))
+    modules_df = pd.DataFrame(rows, columns=["Module", "Type", "Value"])
+
+    # find biggest reservoirs
+    send_info_event(demo_7_get_data, "finding biggest reservoirs")
+    biggest = modules_df.copy()
+    biggest = biggest[biggest["Type"] == "ReservoirCapacityGWh"]
+    biggest = biggest.sort_values(by="Value", ascending=False)
+    biggest = biggest.reset_index(drop=True)
+    biggest = list(biggest.iloc[:20]["Module"])
+
+    # find price area for each biggest reservoir
+    power_node_dict = dict()
+    for key in biggest:
+        next_key = key
+        power_node = None
+        while not power_node:
+            hydro_module: HydroModule = data[next_key]
+            generator = hydro_module.get_generator()
+            if generator is not None:
+                power_node = generator.get_power_node()
+                break
+            pump = hydro_module.get_pump()
+            if pump is not None:
+                power_node = pump.get_power_node()
+                break
+            next_key = hydro_module.get_release_to()
+        power_node_dict[key] = power_node
+
+    # get prices for each relevant power node
+    power_prices = dict()
+    for key in set(power_node_dict.values()):
+        node: Node = data[key]
+        price = node.get_price().get_scenario_vector(db, scen_dim_market, data_dim, f"{currency}/MWh")
+        power_prices[key] = price
+
+    # create series_df for the biggest reservoirs
+    send_info_event(demo_7_get_data, "creating series_df for biggest reservoirs")
+    series_df = dict()
+    for key in biggest:
+        hydro_module: HydroModule = data[key]
+        reservoir = hydro_module.get_reservoir()
+        eneq_kwh_per_m3 = eneq_dict[key]
+        reservoir_cap_mm3_series = reservoir.get_capacity().get_scenario_vector(db, scen_dim_market, data_dim, "Mm3")
+        reservoir_vol_mm3_series = reservoir.get_volume().get_scenario_vector(db, scen_dim_market, data_dim, "Mm3")
+        reservoir_filling = reservoir_vol_mm3_series / reservoir_cap_mm3_series
+        # TODO: replace dummy data with hydro_module.get_scenario_vector call
+        water_values = reservoir_filling.copy()
+        water_values.fill(50.0)
+        # water_values = hydro_module.get_water_value().get_scenario_vector(db, scen_dim_market, data_dim, f"{currency}/m3")
+        np.multiply(water_value, 1000.0 / eneq_kwh_per_m3, out=water_values)
+        series_df[f"ReservoirFilling/{key}"] = reservoir_filling
+        series_df[f"WaterValueEURPerMWh/{key}"] = water_values
+        series_df[f"PowerPriceEURPerMWh/{key}"] = power_prices[power_node_dict[key]]
+
+    series_df = pd.DataFrame(series_df)
+
+    # write result file
+    send_info_event(demo_7_get_data, f"writing result file: {output_file_path}")
+    with pd.HDFStore(output_file_path, mode="w") as store:
+        store.put(key="modules_df", value=modules_df)
+        store.put(key="series_df", value=series_df)
+    
+    
 if __name__ == "__main__":
     demo_7_get_data()

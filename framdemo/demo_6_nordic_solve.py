@@ -1,7 +1,7 @@
-def demo_6_nordic_solve():
+def demo_6_nordic_solve(num_cpu_cores: int):
     """
-    Same as demo 4, but here we only simulate nordic zones, using prices from demo 3 as exogenous prices.
-    
+    Use same as demo 4, but here we only simulate nordic zones, using prices from demo 3 as exogenous prices.
+
     1. Read aggregated model from demo 3 from disk
     2. Filter dataset to only contain Nordic power market
     3. Read configured JulES solver used in demo 3 from disk
@@ -33,7 +33,7 @@ def demo_6_nordic_solve():
     config = jules.get_config()
     config.set_solve_folder(du.DEMO_FOLDER / "nordic")
     config.activate_skip_install_dependencies()
-    config.set_num_cpu_cores(1)
+    config.set_num_cpu_cores(num_cpu_cores)
 
     # Increase demand in norwegian price areas with 20 percent
     for value in model.get_data().values():
@@ -45,4 +45,4 @@ def demo_6_nordic_solve():
 
 
 if __name__ == "__main__":
-    demo_6_nordic_solve()
+    demo_6_nordic_solve(num_cpu_cores=8)

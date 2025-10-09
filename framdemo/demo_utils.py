@@ -14,7 +14,7 @@ from framdemo.EventHandler import EventHandler
 # this makes demo output better
 set_event_handler(EventHandler())
 
-DATASET_SOURCE = Path(r"/PATH/TO/DATASET").resolve()
+DATASET_SOURCE = None
 DEMO_FOLDER = Path.resolve(Path(__file__)).parent.parent / "demo_folder"
 JULIA_PATH_EXE = None
 

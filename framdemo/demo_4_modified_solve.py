@@ -1,7 +1,7 @@
-def demo_4_modified_solve():
+def demo_4_modified_solve(num_cpu_cores: int):
     """
-    Same model as demo 3 except one change. Reuse solver settings.
-    
+    Use same model as demo 3 except one change. Reuse solver settings.
+
     1. Read aggregated model from demo 3 from disk
     2. Read configured JulES solver used in demo 3 from disk
     3. Make a few configurations
@@ -25,7 +25,7 @@ def demo_4_modified_solve():
     config = jules.get_config()
     config.set_solve_folder(du.DEMO_FOLDER / "modified")
     config.activate_skip_install_dependencies()
-    config.set_num_cpu_cores(3)
+    config.set_num_cpu_cores(num_cpu_cores)
 
     # Increase demand in norwegian price areas with 20 percent
     for value in model.get_data().values():
@@ -37,4 +37,4 @@ def demo_4_modified_solve():
 
 
 if __name__ == "__main__":
-    demo_4_modified_solve()
+    demo_4_modified_solve(num_cpu_cores=8)

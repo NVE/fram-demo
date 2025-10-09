@@ -1,6 +1,7 @@
-def demo_3_solve_model():
+def demo_3_solve_model(num_cpu_cores: int):
     """
     Solve model.
+
     1. Read populated model from populate model demo from disk.
     2. Aggregate power nodes in model to elspot areas.
     3. Create a JulES solver object.
@@ -8,18 +9,20 @@ def demo_3_solve_model():
     5. Solve the model with JulES.
     """
     from datetime import timedelta
-
+    
     import numpy as np
+
     from framcore import Model
     from framcore.aggregators import HydroAggregator, NodeAggregator
     from framcore.timeindexes import ModelYear, OneYearProfileTimeIndex, WeeklyIndex
     from framcore.timevectors import ListTimeVector
+
     from framjules import JulES
 
     import framdemo.demo_utils as du
 
-    model_year = ModelYear(2023)
-    first_weather_year = 1991
+    model_year = ModelYear(2025)
+    first_weather_year = 1995
     num_weather_years = 3
     weekly_index = WeeklyIndex(first_weather_year, num_weather_years)
 
@@ -73,17 +76,14 @@ def demo_3_solve_model():
     # Get object to configure JulES
     config = jules.get_config()
 
-    # Configure serial simulation
-    #   Use num_weather_years weather years from first_weather_year
-    #   to represent weather uncertainty
-    #   Simulate model year 2025 for the first weather year
+    # Configure serial simulation of model_year over all weather years
     config.set_simulation_mode_serial()
     config.set_weather_years(first_weather_year, num_weather_years)
     config.set_data_period(model_year)
     config.set_simulation_years(first_weather_year, num_weather_years)
 
     # JulES can use this many cpu cores
-    config.set_num_cpu_cores(8)
+    config.set_num_cpu_cores(num_cpu_cores)
 
     # JulES shall write files to this folder
     config.set_solve_folder(du.DEMO_FOLDER / "base")
@@ -91,18 +91,12 @@ def demo_3_solve_model():
     # Get object to configure time resolution
     time_resolution = config.get_time_resolution()
 
-    # Configure clearing problem
-    #   6-day horizon
-    #   48 3-hour market periods
-    #   3 2-day storage period
+    # 2-day clearing problem with 3-hour market periods and 2-day storage periods
     time_resolution.set_clearing_market_minutes(3 * 60)
     time_resolution.set_clearing_storage_minutes(2 * 24 * 60)
-    time_resolution.set_clearing_days(6)
+    time_resolution.set_clearing_days(2)
 
-    # Configure short term prognosis problem
-    #   1-day horizon
-    #   4 6-hour market periods
-    #   1 1-day storage periods
+    # 1-day short term prognosis problem with 6-hour market periods and 1-day storage periods
     time_resolution.set_short_market_minutes(6 * 60)
     time_resolution.set_short_storage_minutes(24 * 60)
     time_resolution.set_short_days(1)
@@ -160,4 +154,4 @@ def demo_3_solve_model():
 
 
 if __name__ == "__main__":
-    demo_3_solve_model()
+    demo_3_solve_model(num_cpu_cores=8)

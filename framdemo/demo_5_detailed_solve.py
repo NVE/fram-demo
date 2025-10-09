@@ -1,6 +1,6 @@
-def demo_5_detailed_solve():
+def demo_5_detailed_solve(num_cpu_cores: int):
     """
-    Same model as demo 3 except with detailed hydro power instead of aggregated hydropower.
+    Use same model as demo 3 except with detailed hydro power instead of aggregated hydropower.
 
     Solve model.
     1. Read populated model from populate model demo from disk.
@@ -26,12 +26,12 @@ def demo_5_detailed_solve():
 
     # read configured jules solver used in demo 3 from disk
     jules: JulES = du.load(du.DEMO_FOLDER / "base" / "solver.pickle")
-    
+
     # Make a few configurations (where to save files and to reuse installation)
     config = jules.get_config()
     config.set_solve_folder(du.DEMO_FOLDER / "detailed")
     config.activate_skip_install_dependencies()
-    config.set_num_cpu_cores(4)
+    config.set_num_cpu_cores(num_cpu_cores)
 
     # get info from config needed for the next steps
     model_year: ModelYear = config.get_data_period()
@@ -42,14 +42,14 @@ def demo_5_detailed_solve():
     node_aggregator = NodeAggregator("Power", "elspot", model_year, weekly_index)
     node_aggregator.aggregate(model)
 
-    # The below is different from demo 3. 
+    # The below is different from demo 3.
     # In demo 3, we aggregate the input model here.
-    # Here, we give JulES the hydro aggregators. This way, JulES will use detailed hydropower 
-    # in the simulation, and only use aggregated hydropower when estimating future prices 
+    # Here, we give JulES the hydro aggregators. This way, JulES will use detailed hydropower
+    # in the simulation, and only use aggregated hydropower when estimating future prices
     # (we need aggregated hydropower in this step of JulES. Whithout it, the simulation would take forever to finish.
-    # You can see for yourself by uncommenting 
+    # You can see for yourself by uncommenting
     # config.set_short_term_aggregations([hydro_aggregator_norway, hydro_aggregator_sweden_finland])
-    # below. This line, which will trigger detailed hydropower in all of JulES) 
+    # below. This line, which will trigger detailed hydropower in all of JulES)
 
     # Make a release_capacity_profile to further restrict the release capacity of the aggregated hydropower plants.
     values = np.array([0.93, 0.88, 0.89, 0.90])
@@ -87,4 +87,4 @@ def demo_5_detailed_solve():
 
 
 if __name__ == "__main__":
-    demo_5_detailed_solve()
+    demo_5_detailed_solve(num_cpu_cores=8)
