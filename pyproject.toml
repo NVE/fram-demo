@@ -7,7 +7,7 @@ authors = [
 ]
 license = "LICENSE.md"
 readme = "README.md"
-requires-python = ">=3.11,<4"
+requires-python = ">=3.11,<3.14"
 
 dependencies = [
     "fram-core (>=0.1.0a1)",
