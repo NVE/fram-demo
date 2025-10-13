@@ -21,7 +21,7 @@ def demo_3_solve_model(num_cpu_cores: int):
 
     import framdemo.demo_utils as du
 
-    model_year = ModelYear(2025)
+    model_year = ModelYear(2023)
     first_weather_year = 1995
     num_weather_years = 3
     weekly_index = WeeklyIndex(first_weather_year, num_weather_years)

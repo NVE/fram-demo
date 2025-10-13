@@ -33,9 +33,18 @@ For full documentation, visit https://python-poetry.org/docs/#installation.
 
 import sys
 
+# Check Python executable being used
+print(f"Using Python executable: {sys.executable}")
+
 # Eager version check so we fail nicely before possible syntax errors
-if sys.version_info < (3, 6):  # noqa: UP036
-    sys.stdout.write("Poetry installer requires Python 3.6 or newer to run!\n")
+sys.stdout.write("Checking python version..\n")
+version = sys.version_info
+sys.stdout.write(f"Python version: {version.major}.{version.minor}.{version.micro}")
+
+# Require Python version >=3.11 and <3.14 to continue
+if sys.version_info < (3, 11) or sys.version_info >= (3, 14):
+    sys.stdout.write("Poetry installer requires Python version >=3.11 and <3.14 to run!\n")
+    sys.stdout.write("Please install a compatible Python version and try again.\n")
     sys.exit(1)
 
 

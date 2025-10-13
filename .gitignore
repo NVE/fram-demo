@@ -1,0 +1,10 @@
+.venv/
+venv/
+poetry.lock
+framdemo/__pycache__/
+tests/__pycache__/
+site/
+demo_folder/
+demo_folder_stable/
+*workflow.*/
+poetry.exe

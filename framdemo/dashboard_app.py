@@ -487,7 +487,7 @@ if menu_option == "Hydro":
     # selected reservoir filling
     if selected_reservoirs:
         selected_columns = [f"ReservoirFilling/{name_to_key[name]}" for name in selected_reservoirs]
-        df = series_df[selected_columns]
+        df = series_df[selected_columns].copy()
 
         capacities = modules_df.copy()
         capacities = capacities[capacities["Name"].isin(selected_reservoirs)]
