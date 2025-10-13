@@ -12,7 +12,7 @@ on:
 
 jobs:
   deploy-docs:
-    uses: ./.github/workflows/template_publish_docs.yml
+    uses: NVE/fram-shared/.github/workflows/template_publish_docs.yml@main
     permissions:
       contents: write
     with:
