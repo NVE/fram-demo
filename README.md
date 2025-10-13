@@ -5,7 +5,7 @@ See [FRAM demo](https://nve.github.io/fram-demo/) for description and documentat
 
 ## To install and run the demos
 
-You need Python version >3.11 and <3.14 on your machine in order to install and run the demos. If you don't already have Python installed, you can get it here: https://www.python.org/.
+You need Python version >=3.11 and <3.14 on your machine in order to install and run the demos. If you don't already have Python installed, you can get it here: https://www.python.org/.
 You can check the version of python installed by running `python --version` in terminal window.
 
 To install and run, follow these steps:
