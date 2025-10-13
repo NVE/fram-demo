@@ -34,12 +34,12 @@ For full documentation, visit https://python-poetry.org/docs/#installation.
 import sys
 
 # Check Python executable being used
-print(f"Using Python executable: {sys.executable}")
+sys.stdout.write(f"Using Python executable: {sys.executable}\n")
 
 # Eager version check so we fail nicely before possible syntax errors
 sys.stdout.write("Checking python version..\n")
 version = sys.version_info
-sys.stdout.write(f"Python version: {version.major}.{version.minor}.{version.micro}")
+sys.stdout.write(f"Python version: {version.major}.{version.minor}.{version.micro}\n")
 
 # Require Python version >=3.11 and <3.14 to continue
 if sys.version_info < (3, 11) or sys.version_info >= (3, 14):
