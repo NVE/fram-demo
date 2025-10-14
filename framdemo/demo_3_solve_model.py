@@ -67,7 +67,7 @@ def demo_3_solve_model(num_cpu_cores: int):
     config.set_simulation_mode_serial()
     config.set_weather_years(first_weather_year, num_weather_years)
     config.set_data_period(model_year)
-    config.set_simulation_years(first_weather_year, 1)
+    config.set_simulation_years(first_weather_year, num_weather_years)
 
     # JulES can use this many cpu cores
     config.set_num_cpu_cores(num_cpu_cores)
