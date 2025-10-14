@@ -127,14 +127,14 @@ def demo_3_solve_model(num_cpu_cores: int):
     config.set_commodity_units(commodity="Hydro", stock_unit="Mm3", flow_unit="m3/s")
     config.set_commodity_units(commodity="CO2", stock_unit="t")
 
-    # Install the git branch "redesign_mfw" for both JulES and TuLiPa
+    # Install specified git branches for both JulES and TuLiPa
     config.set_jules_version(jules_branch="master", tulipa_branch="redesign_mfw")
 
     # Tell JulES where to find Julia and where to install JulES
     if du.JULIA_PATH_EXE is not None:
         config.set_julia_exe_path(du.JULIA_PATH_EXE)
     config.set_julia_depot_path(du.JULIA_PATH_DEPOT)
-    config.activate_skip_install_dependencies()
+    config.set_julia_env_path(du.JULIA_PATH_ENV)
 
     # Solve the model with JulES
     jules.solve(model)
