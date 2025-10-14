@@ -71,7 +71,8 @@ def demo_8_run_dashboard():
     # Run the Streamlit app
     streamlit_cmd_path = get_streamlit_cmd_path()
     streamlit_cmd = "streamlit" if streamlit_cmd_path is None else str(streamlit_cmd_path)
-    subprocess.run([streamlit_cmd, "run", str(app_path), "--server.port", str(port)], check=True)
+    subprocess.Popen([streamlit_cmd, "run", str(app_path), "--server.port", str(port)], env=environ)
+    webbrowser.open(f"http://localhost:{port}")
 
 
 if __name__ == "__main__":
