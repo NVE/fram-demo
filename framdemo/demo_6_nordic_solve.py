@@ -31,7 +31,7 @@ def demo_6_nordic_solve(num_cpu_cores: int):
 
     # Make a few configurations (where to save files and to reuse installation)
     config = jules.get_config()
-    config.set_solve_folder(du.DEMO_FOLDER / "nordic")
+    config.set_solve_folder(du.DEMO_FOLDER / "modified_nordic")
     config.activate_skip_install_dependencies()
     config.set_num_cpu_cores(num_cpu_cores)
 

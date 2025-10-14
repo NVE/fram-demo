@@ -1,8 +1,14 @@
 def demo_8_run_dashboard():
-    """Runs dashboard with results in your browser."""
+    """Runs dashboard with results in your browser.
+    
+    1. Finds an available port on localhost.
+    2. Makes sure a supported browser is available (chrome, msedge or firefox).
+    2. Runs streamlit dashboard by data and plots in dashboard_app.py.
+    """
     import subprocess
     import webbrowser
     from pathlib import Path
+    from os import environ
 
     def get_available_port() -> int:
         """
@@ -58,8 +64,13 @@ def demo_8_run_dashboard():
     # Open the Streamlit app in browser
     webbrowser.register("streamlit_browser", None, webbrowser.BackgroundBrowser(get_browser_exe_path()))
 
+    # Used to avoid email prompt on first run
+    environ["STREAMLIT_SERVER_HEADLESS"] = "true"
+    environ["STREAMLIT_BROWSER_GATHER_USAGE_STATS"] = "false"
+
     # Run the Streamlit app
-    streamlit_cmd = str(get_streamlit_cmd_path()) or "streamlit"
+    streamlit_cmd_path = get_streamlit_cmd_path()
+    streamlit_cmd = "streamlit" if streamlit_cmd_path is None else str(streamlit_cmd_path)
     subprocess.run([streamlit_cmd, "run", str(app_path), "--server.port", str(port)], check=True)
 
 

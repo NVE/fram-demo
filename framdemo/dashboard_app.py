@@ -1,4 +1,11 @@
-"""Simple demo dashboard app."""
+"""
+Simple demo dashboard app.
+
+This app reads results from HDF5 files and displays them using Streamlit and Plotly.
+Pages are craeted for price information, regional results, and hydropower information for the demo purpose.
+
+1. Sets up infrastructure for the dashboard.
+"""
 
 import contextlib
 
@@ -236,7 +243,7 @@ if menu_option == "Volume":
     selected_country = st.sidebar.radio(
         label="Select a country:",
         options=countries,
-        index=0,
+        index=countries.index("Norway") if "Norway" in countries else 0,
     )
 
     # total production and consumption bar plot
@@ -359,7 +366,7 @@ if menu_option == "Hydro":
     selected_country = st.sidebar.radio(
         label="Select a country:",
         options=countries,
-        index=1,
+        index=countries.index("Norway") if "Norway" in countries else 0,
     )
 
     # read data
@@ -388,7 +395,7 @@ if menu_option == "Hydro":
         reservoir_df *= 100
         fig = px.line(
             reservoir_df,
-            title=f"{selected_country}'s hydro reservoir filling, gouped by selected solve",
+            title=f"{selected_country}'s hydro reservoir energy content (%), grouped by selected solve",
             labels={"index": "Days"},
         )
         fig.update_yaxes(range=[0, 101])
@@ -433,18 +440,16 @@ if menu_option == "Hydro":
     if not modules_df.empty:
         modules_df["Name"] = modules_df["Module"].apply(get_module_name)
 
-    # add reservoirs filter
-    selected_reservoirs = []
-    name_to_key = dict()
-    if not series_df.empty:
-        st.sidebar.write("Select big reservoirs:")
-        for i, col_name in enumerate(series_df.columns):
-            if col_name.startswith("ReservoirFilling"):
-                module_key = col_name.replace("ReservoirFilling/", "")
-                module_name = get_module_name(module_key)
-                name_to_key[module_name] = module_key
-                if st.sidebar.checkbox(label=module_name, value=i == 0):
-                    selected_reservoirs.append(module_name)
+    # add reservoir filter
+    reservoir_keys = [c.replace("ReservoirFilling/", "") for c in series_df.columns if c.startswith("ReservoirFilling")]
+    reservoir_names = [get_module_name(c) for c in reservoir_keys]
+    name_to_key = dict(zip(reservoir_names, reservoir_keys, strict=True))
+    selected_reservoir_name = st.sidebar.radio(
+        label="Select a reservoir:",
+        options=reservoir_names,
+        index=0,
+    )
+    selected_reservoirs = [selected_reservoir_name]
 
     # top n yearly generation
     if not modules_df.empty:
@@ -507,11 +512,6 @@ if menu_option == "Hydro":
             df,
             title=f"Reservoir filling percentage for selected reservoirs from detailed solve",
         )
-        fig.update_xaxes(title="Days")
+        fig.update_xaxes(title="3-hour blocks")
         fig.update_yaxes(title="", range=[0, 101])
         st.plotly_chart(fig)
-
-
-
-        
-

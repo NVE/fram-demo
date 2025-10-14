@@ -15,7 +15,10 @@ nav:
   - index.md
   - how_to_run_demo.md
   #- what_demo_includes.md - #TODO: denne må legges tilbake når two-staged er klar
-  - reference.md
+  - Code Reference:
+    - reference/EventHandler.md
+    - reference/dashboard_app.md
+    - reference/demo_utils.md
 
 markdown_extensions:
 - tables

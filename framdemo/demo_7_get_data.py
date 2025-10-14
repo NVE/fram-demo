@@ -1,5 +1,11 @@
 def demo_7_get_data():
-    """Writes results to h5 files that will be sent to dashboard."""
+    """
+    Writes results to h5 files that will be sent to dashboard.
+    
+    1. Get prices for power nodes with existing price data in model for different solves and saves to dashboard_prices.h5 in demo folder.
+    2. Get regional volumes for all countries in model for different solves and saves to dashboard_volumes.h5 in demo folder.
+    3. Get hydro data for Norway, Sweden and Finland (*zones with hydropower data in model*) for different solves and saves to dashboard_hydro.h5 in demo folder.
+    """
     import numpy as np
     import pandas as pd
     import datetime
@@ -30,7 +36,7 @@ def demo_7_get_data():
 
     # get all power nodes
 
-    solve_names = ["base", "modified", "detailed", "nordic"]
+    solve_names = ["base", "modified", "detailed", "modified_nordic"]
 
     # read configured jules solver used in demo 3 from disk
     jules: JulES = du.load(du.DEMO_FOLDER / solve_names[0] / "solver.pickle")

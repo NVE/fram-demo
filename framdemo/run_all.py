@@ -11,8 +11,7 @@ from framdemo.demo_8_run_dashboard import demo_8_run_dashboard
 
 if __name__ == "__main__":
     demo_1_download_dataset()
-    demo_2_populate_model()    
-    
+    demo_2_populate_model()
     demo_3_solve_model(num_cpu_cores=8)
 
     # run demo 4, 5 and 6 in parallel

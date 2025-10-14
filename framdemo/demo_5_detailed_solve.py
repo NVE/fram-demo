@@ -2,7 +2,6 @@ def demo_5_detailed_solve(num_cpu_cores: int):
     """
     Use same model as demo 3 except with detailed hydro power instead of aggregated hydropower.
 
-    Solve model.
     1. Read populated model from populate model demo from disk.
     2. Aggregate power nodes in model to elspot areas.
     3. Read configured JulES solver from demo 3.
@@ -51,11 +50,6 @@ def demo_5_detailed_solve(num_cpu_cores: int):
     # config.set_short_term_aggregations([hydro_aggregator_norway, hydro_aggregator_sweden_finland])
     # below. This line, which will trigger detailed hydropower in all of JulES)
 
-    # Make a release_capacity_profile to further restrict the release capacity of the aggregated hydropower plants.
-    values = np.array([0.93, 0.88, 0.89, 0.90])
-    timeindex = OneYearProfileTimeIndex(period_duration=timedelta(weeks=13), is_52_week_years=True)
-    release_capacity_profile = ListTimeVector(timeindex, values, unit=None, is_max_level=None, is_zero_one_profile=True)
-
     # Aggregate hydro power plants in model to elspot areas.
     #   HydroAggregator will create one run-of-river hydropower module and one reservoir hydropower module per elspot area.
     #   We use different aggregations for Norway and for Sweden and Finland.
@@ -65,10 +59,9 @@ def demo_5_detailed_solve(num_cpu_cores: int):
         "EnergyEqDownstream",
         model_year,
         weekly_index,
-        ror_threshold=0.6,
+        ror_threshold=0.55,
         metakey_power_node="Country",
         power_node_members=["Norway"],
-        release_capacity_profile=release_capacity_profile,
     )
 
     hydro_aggregator_sweden_finland = HydroAggregator(
@@ -78,7 +71,6 @@ def demo_5_detailed_solve(num_cpu_cores: int):
         ror_threshold=0.38,
         metakey_power_node="Country",
         power_node_members=["Sweden", "Finland"],
-        release_capacity_profile=release_capacity_profile,
     )
     config.set_short_term_aggregations([hydro_aggregator_norway, hydro_aggregator_sweden_finland])
 

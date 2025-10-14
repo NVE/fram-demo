@@ -1,22 +1,16 @@
 def demo_3_solve_model(num_cpu_cores: int):
     """
     Solve model.
-
+    
     1. Read populated model from populate model demo from disk.
     2. Aggregate power nodes in model to elspot areas.
     3. Create a JulES solver object.
     4. Configure JulES.
     5. Solve the model with JulES.
     """
-    from datetime import timedelta
-    
-    import numpy as np
-
     from framcore import Model
     from framcore.aggregators import HydroAggregator, NodeAggregator
-    from framcore.timeindexes import ModelYear, OneYearProfileTimeIndex, WeeklyIndex
-    from framcore.timevectors import ListTimeVector
-
+    from framcore.timeindexes import ModelYear, WeeklyIndex
     from framjules import JulES
 
     import framdemo.demo_utils as du
@@ -33,11 +27,6 @@ def demo_3_solve_model(num_cpu_cores: int):
     node_aggregator = NodeAggregator("Power", "elspot", model_year, weekly_index)
     node_aggregator.aggregate(model)
 
-    # Make a release_capacity_profile to further restrict the release capacity of the aggregated hydropower plants.
-    values = np.array([0.93, 0.88, 0.89, 0.90])
-    timeindex = OneYearProfileTimeIndex(period_duration=timedelta(weeks=13), is_52_week_years=True)
-    release_capacity_profile = ListTimeVector(timeindex, values, unit=None, is_max_level=None, is_zero_one_profile=True)
-
     # Aggregate hydro power plants in model to elspot areas.
     #   HydroAggregator will create one run-of-river hydropower module and one reservoir hydropower module per elspot area.
     #   We use different aggregations for Norway and for Sweden and Finland.
@@ -47,10 +36,9 @@ def demo_3_solve_model(num_cpu_cores: int):
         "EnergyEqDownstream",
         model_year,
         weekly_index,
-        ror_threshold=0.6,
+        ror_threshold=0.55,
         metakey_power_node="Country",
         power_node_members=["Norway"],
-        release_capacity_profile=release_capacity_profile,
     )
     hydro_aggregator_norway.aggregate(model)
 
@@ -61,7 +49,6 @@ def demo_3_solve_model(num_cpu_cores: int):
         ror_threshold=0.38,
         metakey_power_node="Country",
         power_node_members=["Sweden", "Finland"],
-        release_capacity_profile=release_capacity_profile,
     )
     hydro_aggregator_sweden_finland.aggregate(model)
 
@@ -80,7 +67,7 @@ def demo_3_solve_model(num_cpu_cores: int):
     config.set_simulation_mode_serial()
     config.set_weather_years(first_weather_year, num_weather_years)
     config.set_data_period(model_year)
-    config.set_simulation_years(first_weather_year, num_weather_years)
+    config.set_simulation_years(first_weather_year, 1)
 
     # JulES can use this many cpu cores
     config.set_num_cpu_cores(num_cpu_cores)
@@ -146,8 +133,8 @@ def demo_3_solve_model(num_cpu_cores: int):
     # Tell JulES where to find Julia and where to install JulES
     if du.JULIA_PATH_EXE is not None:
         config.set_julia_exe_path(du.JULIA_PATH_EXE)
-    config.set_julia_env_path(du.DEMO_FOLDER / "julia_env")
-    config.set_julia_depot_path(du.DEMO_FOLDER / "julia_depot")
+    config.set_julia_depot_path(du.JULIA_PATH_DEPOT)
+    config.activate_skip_install_dependencies()
 
     # Solve the model with JulES
     jules.solve(model)

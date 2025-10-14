@@ -16,8 +16,10 @@ set_event_handler(EventHandler())
 
 DATASET_SOURCE = None
 DEMO_FOLDER = Path.resolve(Path(__file__)).parent.parent / "demo_folder"
-JULIA_PATH_EXE = None
 
+JULIA_PATH_EXE = None
+JULIA_PATH_ENV = DEMO_FOLDER / "julia_env"
+JULIA_PATH_DEPOT = DEMO_FOLDER / "julia_depot"
 
 def display(message: str, obj: object = None, digits_round: int = 1) -> None:
     """Send an object to EventHandler for display."""
