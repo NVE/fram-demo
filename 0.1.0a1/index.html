@@ -14,7 +14,7 @@
       
       
       
-        <link rel="next" href="how_to_run_demo/">
+        <link rel="next" href="demo_description/">
       
       
       <link rel="icon" href="assets/images/favicon.png">
@@ -46,6 +46,8 @@
     
     
       <link rel="stylesheet" href="assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="assets/styles.css">
     
     <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -237,19 +239,6 @@
         
       
       
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Overview
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
       <a href="." class="md-nav__link md-nav__link--active">
         
   
@@ -262,34 +251,6 @@
 
       </a>
       
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#features-in-fram-that-we-want-to-demonstrate-with-this-demo" class="md-nav__link">
-    <span class="md-ellipsis">
-      Features in FRAM that we want to demonstrate with this demo:
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -301,131 +262,17 @@
   
   
     <li class="md-nav__item">
-      <a href="how_to_run_demo/" class="md-nav__link">
+      <a href="demo_description/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    How to run demo
+    Demo description
     
   </span>
   
 
       </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-    
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    Code Reference
-    
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3">
-            <span class="md-nav__icon md-icon"></span>
-            Code Reference
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="reference/EventHandler/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    EventHandler class
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="reference/dashboard_app/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    dashboard_app.py script
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="reference/demo_utils/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    demo_utils.py sript
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -452,23 +299,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#features-in-fram-that-we-want-to-demonstrate-with-this-demo" class="md-nav__link">
-    <span class="md-ellipsis">
-      Features in FRAM that we want to demonstrate with this demo:
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -489,22 +319,22 @@
 
 
 <h1 id="overview">Overview</h1>
-<p>This demo case demonstrates functionality in <a href="https://nve.github.io/fram/" target="_blank">FRAM open-source modelling framework</a> for running energy market models. </p>
-<p>The demo case is modelling of the present-day European power market using <a href="https://github.com/NVE/JulES/" target="_blank">JulES open-source power market model</a>. The case is based on openly available data from different data providers, such as <a href="https://www.nve.no/" target="_blank">the Norwegian Water Resources and Energy Directorate (NVE)</a>, ENTSOE-E and other data providers. Detailed information about the data sources and the dataset can be found in <a href="https://nve.github.io/fram-dataset/" target="_blank">dataset repository</a>.  </p>
-<blockquote>
-<p><strong>Important! Modelling in this demo case is by no means meant to be realistic. It is only used for demonstration purposes and must not be used for real analyses or investment decisions. NVE does not stand for the assumptions or the model results in this demo. Users must be aware of possible errors and inaccuracies in the dataset. NVE is not liable for any direct or indirect losses as a result of the use of the demo or in connection with copying or further distribution of the information in the modelling in this demo.</strong></p>
-</blockquote>
-<h3 id="features-in-fram-that-we-want-to-demonstrate-with-this-demo">Features in FRAM that we want to demonstrate with this demo:</h3>
+<p>This demo case demonstrates functionality in <a href="https://nve.github.io/fram/" target="_blank">FRAM open-source modelling framework</a>. </p>
+<p>The demo case is modelling of the present-day European power market with focus on the Nordic region using <a href="https://github.com/NVE/JulES/" target="_blank">JulES open-source power market model</a>. </p>
+<p>The case is based on openly available data from different data providers, such as <a href="https://www.nve.no/english/" target="_blank">the Norwegian Water Resources and Energy Directorate (NVE)</a>, ENTSO-E and others. Detailed information about the data sources and the dataset can be found in <a href="https://zenodo.org/records/17294467" target="_blank">dataset repository</a>.  </p>
+<div class="red-box">
+Important! Modelling in this demo case is by no means meant to be realistic. It is only used for demonstration purposes and must not be used for real analyses or investment decisions. NVE does not stand for the assumptions or the model results in this demo. Users must be aware of possible errors and inaccuracies in the dataset. NVE is not liable for any direct or indirect losses as a result of the use of the demo or in connection with copying or further distribution of the information in the modelling in this demo. 
+</div>
+
+<p><strong>Features in FRAM that we want to demonstrate in this demo:</strong></p>
 <ul>
 <li>model-independent database and a solid database handling package that can be adjusted depending on your needs</li>
 <li>efficient processing of large data amounts </li>
 <li>smart and innovative system for data transformation for the given power market model </li>
-<li>easy aggregation and disaggregation using core model</li>
-<li>flexibility and modularity - FRAM can be extended and adjusted depending on your needs </li>
-<li>easy APIs</li>
+<li>easy aggregation using core model</li>
 </ul>
 <p><img align="right" alt="Power Market" src="img/power_market_illustration.jpg" /></p>
-<p><em>Image © <a href="https://pixabay.com/photos/pylon-cables-sunrise-sunlight-sun-503935/">Pixabay</a></em></p>
+<p><em>Image © <a href="https://www.nve.no/english/">NVE</a> High-voltage power line in Sognefjellet</em></p>
 
 
 
