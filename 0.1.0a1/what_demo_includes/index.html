@@ -251,7 +251,7 @@
   
   
   <span class="md-ellipsis">
-    How to run the demo
+    How to run demo
     
   </span>
   
@@ -267,9 +267,20 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../reference/" class="md-nav__link">
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
         
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -278,7 +289,88 @@
   </span>
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Code Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/EventHandler/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    EventHandler class
+    
+  </span>
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/dashboard_app/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    dashboard_app.py script
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/demo_utils/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    demo_utils.py sript
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -321,69 +413,71 @@
 
 
 <h1 id="what-the-demo-case-includes">What the demo case includes</h1>
-<p>The demo case includes <strong>2 model runs</strong>:</p>
+<p>The demo case includes <strong>4 model solves</strong>:</p>
 <ul>
-<li>northern Europe aggregated (endogenous and exogenous regions)</li>
-<li>Nordic countries (Norway, Sweden, Finland, Denmark) more detailed (namely more detailed hydropower) using prices from the previous model run.</li>
+<li>Northern Europe aggregated (endogenous and exogenous regions) (demo_3)</li>
+<li>Northern Europe aggregated (endogenous and exogenous regions) with demand in Norway increased by 20% (demo_4)</li>
+<li>Northern Europe with detailed hydropower data in the northern countries (endogenous and exogenous regions) (demo_5)</li>
+<li>Nordic countries (Norway, Sweden, Finland, Denmark) using exogenous prices in remaining countries from the previous model solve in demo_3. Includes a 20% increase in demand in Norway. (demo_6)</li>
 </ul>
 <p>The following countries are included in the demo case: </p>
 <table>
 <thead>
 <tr>
 <th style="text-align: left;">Countries included</th>
-<th style="text-align: left;">Modelling - 1st model run</th>
-<th style="text-align: left;">Modelling - 2nd model run</th>
+<th style="text-align: left;">demo_3-demo_5</th>
+<th style="text-align: left;">demo_6</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align: left;">Norway</td>
-<td style="text-align: left;">endogenous/aggregated</td>
-<td style="text-align: left;">endogenous/dissaggregated</td>
+<td style="text-align: left;">endogenous</td>
+<td style="text-align: left;">endogenous</td>
 </tr>
 <tr>
 <td style="text-align: left;">Sweden</td>
-<td style="text-align: left;">endogenous/aggregated</td>
-<td style="text-align: left;">endogenous/dissaggregated</td>
+<td style="text-align: left;">endogenous</td>
+<td style="text-align: left;">endogenous</td>
 </tr>
 <tr>
 <td style="text-align: left;">Finland</td>
-<td style="text-align: left;">endogenous/aggregated</td>
-<td style="text-align: left;">endogenous/dissaggregated</td>
+<td style="text-align: left;">endogenous</td>
+<td style="text-align: left;">endogenous</td>
 </tr>
 <tr>
 <td style="text-align: left;">Denmark</td>
-<td style="text-align: left;">endogenous/aggregated</td>
-<td style="text-align: left;">endogenous/dissaggregated</td>
+<td style="text-align: left;">endogenous</td>
+<td style="text-align: left;">endogenous</td>
 </tr>
 <tr>
 <td style="text-align: left;">Netherlands</td>
-<td style="text-align: left;">endogenous/aggregated</td>
+<td style="text-align: left;">endogenous</td>
 <td style="text-align: left;">exogenous</td>
 </tr>
 <tr>
 <td style="text-align: left;">Germany</td>
-<td style="text-align: left;">endogenous/aggregated</td>
+<td style="text-align: left;">endogenous</td>
 <td style="text-align: left;">exogenous</td>
 </tr>
 <tr>
 <td style="text-align: left;">UK</td>
-<td style="text-align: left;">endogenous/aggregated</td>
+<td style="text-align: left;">endogenous</td>
 <td style="text-align: left;">exogenous</td>
 </tr>
 <tr>
 <td style="text-align: left;">Poland</td>
-<td style="text-align: left;">endogenous/aggregated</td>
+<td style="text-align: left;">endogenous</td>
 <td style="text-align: left;">exogenous</td>
 </tr>
 <tr>
 <td style="text-align: left;">Lithuania</td>
-<td style="text-align: left;">endogenous/aggregated</td>
+<td style="text-align: left;">endogenous</td>
 <td style="text-align: left;">exogenous</td>
 </tr>
 <tr>
 <td style="text-align: left;">Estonia</td>
-<td style="text-align: left;">endogenous/aggregated</td>
+<td style="text-align: left;">endogenous</td>
 <td style="text-align: left;">exogenous</td>
 </tr>
 <tr>

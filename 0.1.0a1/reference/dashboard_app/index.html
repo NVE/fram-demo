@@ -13,20 +13,22 @@
       
       
       
+        <link rel="prev" href="../EventHandler/">
       
-        <link rel="next" href="how_to_run_demo/">
+      
+        <link rel="next" href="../demo_utils/">
       
       
-      <link rel="icon" href="assets/images/favicon.png">
+      <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.21">
     
     
       
-        <title>FRAM demo</title>
+        <title>dashboard_app.py script - FRAM demo</title>
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.2a3383ac.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.2a3383ac.min.css">
       
       
 
@@ -45,9 +47,9 @@
       
     
     
-      <link rel="stylesheet" href="assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
     
-    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -66,7 +68,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#overview" class="md-skip">
+        <a href="#dashboard_apppy-script" class="md-skip">
           Skip to content
         </a>
       
@@ -86,7 +88,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="." title="FRAM demo" class="md-header__button md-logo" aria-label="FRAM demo" data-md-component="logo">
+    <a href="../.." title="FRAM demo" class="md-header__button md-logo" aria-label="FRAM demo" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -106,7 +108,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Overview
+              dashboard_app.py script
             
           </span>
         </div>
@@ -187,8 +189,6 @@
           
             
               
-                
-              
               <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
@@ -198,7 +198,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="." title="FRAM demo" class="md-nav__button md-logo" aria-label="FRAM demo" data-md-component="logo">
+    <a href="../.." title="FRAM demo" class="md-nav__button md-logo" aria-label="FRAM demo" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -225,6 +225,113 @@
       
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../how_to_run_demo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How to run demo
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Code Reference
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Code Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../EventHandler/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    EventHandler class
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -242,7 +349,7 @@
   
   
   <span class="md-ellipsis">
-    Overview
+    dashboard_app.py script
     
   </span>
   
@@ -250,12 +357,12 @@
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <a href="." class="md-nav__link md-nav__link--active">
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
   <span class="md-ellipsis">
-    Overview
+    dashboard_app.py script
     
   </span>
   
@@ -278,9 +385,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#features-in-fram-that-we-want-to-demonstrate-with-this-demo" class="md-nav__link">
+  <a href="#framdemo.dashboard_app" class="md-nav__link">
     <span class="md-ellipsis">
-      Features in FRAM that we want to demonstrate with this demo:
+      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;dashboard_app
     </span>
   </a>
   
@@ -293,88 +400,6 @@
     </li>
   
 
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="how_to_run_demo/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    How to run demo
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-    
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    Code Reference
-    
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3">
-            <span class="md-nav__icon md-icon"></span>
-            Code Reference
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="reference/EventHandler/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    EventHandler class
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
               
             
               
@@ -384,30 +409,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/dashboard_app/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    dashboard_app.py script
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="reference/demo_utils/" class="md-nav__link">
+      <a href="../demo_utils/" class="md-nav__link">
         
   
   
@@ -438,9 +440,7 @@
             
             
               
-                
-              
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" hidden>
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
                     
@@ -459,9 +459,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#features-in-fram-that-we-want-to-demonstrate-with-this-demo" class="md-nav__link">
+  <a href="#framdemo.dashboard_app" class="md-nav__link">
     <span class="md-ellipsis">
-      Features in FRAM that we want to demonstrate with this demo:
+      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;dashboard_app
     </span>
   </a>
   
@@ -480,45 +480,75 @@
               <article class="md-content__inner md-typeset">
                 
                   
-  
-
-
-
-  
-  
-
-
-<h1 id="overview">Overview</h1>
-<p>This demo case demonstrates functionality in <a href="https://nve.github.io/fram/" target="_blank">FRAM open-source modelling framework</a> for running energy market models. </p>
-<p>The demo case is modelling of the present-day European power market using <a href="https://github.com/NVE/JulES/" target="_blank">JulES open-source power market model</a>. The case is based on openly available data from different data providers, such as <a href="https://www.nve.no/" target="_blank">the Norwegian Water Resources and Energy Directorate (NVE)</a>, ENTSOE-E and other data providers. Detailed information about the data sources and the dataset can be found in <a href="https://nve.github.io/fram-dataset/" target="_blank">dataset repository</a>.  </p>
-<blockquote>
-<p><strong>Important! Modelling in this demo case is by no means meant to be realistic. It is only used for demonstration purposes and must not be used for real analyses or investment decisions. NVE does not stand for the assumptions or the model results in this demo. Users must be aware of possible errors and inaccuracies in the dataset. NVE is not liable for any direct or indirect losses as a result of the use of the demo or in connection with copying or further distribution of the information in the modelling in this demo.</strong></p>
-</blockquote>
-<h3 id="features-in-fram-that-we-want-to-demonstrate-with-this-demo">Features in FRAM that we want to demonstrate with this demo:</h3>
-<ul>
-<li>model-independent database and a solid database handling package that can be adjusted depending on your needs</li>
-<li>efficient processing of large data amounts </li>
-<li>smart and innovative system for data transformation for the given power market model </li>
-<li>easy aggregation and disaggregation using core model</li>
-<li>flexibility and modularity - FRAM can be extended and adjusted depending on your needs </li>
-<li>easy APIs</li>
-</ul>
-<p><img align="right" alt="Power Market" src="img/power_market_illustration.jpg" /></p>
-<p><em>Image © <a href="https://pixabay.com/photos/pylon-cables-sunrise-sunlight-sun-503935/">Pixabay</a></em></p>
-
-
-
-
-
 
 
   
   
 
 
+<h1 id="dashboard_apppy-script"><code>dashboard_app.py</code> script</h1>
+<p><code>dashboard_app.py</code> sript contains outline of the dashboard for results visulaization. Dashboard is built using streamlit package in Python. </p>
+<p>Script <code>run_dashboard.py</code> in the demo calls upon <code>dashboard_app.py</code> and renders the dashboard in your browser:</p>
+<pre><code class="language-python">app_path = current_folder / &quot;dashboard_app.py&quot;
+subprocess.run([&quot;streamlit&quot;, &quot;run&quot;, app_path, &quot;--server.port&quot;, &quot;5000&quot;], check=True)
+</code></pre>
 
 
-  
+<div class="doc doc-object doc-module">
+
+
+
+<h2 id="framdemo.dashboard_app" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-module"></code>            <code>framdemo.dashboard_app</code>
+
+
+</h2>
+
+    <div class="doc doc-contents first">
+
+        <p>Simple demo dashboard app.</p>
+<p>This app reads results from HDF5 files and displays them using Streamlit and Plotly.
+Pages are craeted for price information, regional results, and hydropower information for the demo purpose.</p>
+<ol>
+<li>Sets up infrastructure for the dashboard.</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
 
 
 
@@ -558,10 +588,10 @@
     
     
       
-      <script id="__config" type="application/json">{"base": ".", "features": [], "search": "assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="assets/javascripts/bundle.f55a23d4.min.js"></script>
+      <script src="../../assets/javascripts/bundle.f55a23d4.min.js"></script>
       
     
   </body>
