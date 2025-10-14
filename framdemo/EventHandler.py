@@ -51,7 +51,7 @@ class EventHandler:
     ) -> None:
         import rich  # noqa: PLC0415
 
-        sender_color = "blue"
+        sender_color = "#5DE2E7"
         sender_string = f"[{sender_color}]{sender_name}: [/{sender_color}]" if sender_name else ""
 
         if event_type in ["info", "debug", "warning", "error"]:

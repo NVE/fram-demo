@@ -46,7 +46,9 @@ menu_option = st.sidebar.radio(
     options=["Price", "Volume", "Hydro"],
     index=0,
 )
-st.sidebar.markdown("[About FRAM demo](https://nve.github.io/fram-demo/)")
+st.sidebar.markdown("See [demo description](https://nve.github.io/fram-demo/latest/demo_description/) for definition of cases base, detailed, modified and nordic")
+st.sidebar.markdown("[About FRAM](https://nve.github.io/fram/)")
+
 st.sidebar.title("Filters")
 
 # pages

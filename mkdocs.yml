@@ -13,12 +13,12 @@ theme:
 
 nav:
   - index.md
-  - how_to_run_demo.md
-  #- what_demo_includes.md - #TODO: denne må legges tilbake når two-staged er klar
-  - Code Reference:
-    - reference/EventHandler.md
-    - reference/dashboard_app.md
-    - reference/demo_utils.md
+  - demo_description.md
+
+  # - Code Reference:
+  #   - reference/EventHandler.md
+  #   - reference/dashboard_app.md
+  #   - reference/demo_utils.md
 
 markdown_extensions:
 - tables
@@ -41,21 +41,15 @@ plugins:
   - macros
   - table-reader
 
-
 extra:
   version:
     provider: mike
-  juleslinks:
-      jules: https://github.com/NVE/JulES/
-      julia: https://julialang.org/
   framlinks:
-    nve: https://www.nve.no/
+    nve: https://www.nve.no/english/
     fram: https://nve.github.io/fram/
-    core: https://nve.github.io/fram-core/
-    data: https://nve.github.io/fram-data/
-    demo: https://nve.github.io/fram-demo/
-    julesAPI: https://nve.github.io/fram-jules/
-    dataset: https://nve.github.io/fram-dataset/
-    pypicore: https://pypi.org/project/fram-data
-    pypidata: https://pypi.org/project/fram-data
-    pypijules: https://pypi.org/project/fram-jules
+    dataset: https://zenodo.org/records/17294467
+    jules: https://github.com/NVE/JulES/
+    julia: https://julialang.org/
+
+extra_css:
+  - assets/styles.css
