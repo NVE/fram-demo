@@ -12,7 +12,8 @@ Contact [fram@nve.no](mailto:fram@nve.no) if you have any questions or feedback.
 You need Python version >=3.11 and <3.14 on your machine in order to install and run the demos. If you don't already have Python installed, you can get it here: https://www.python.org/.
 You can check the version of python installed by running `python --version` in terminal window.
 
-To install and run, follow these steps:
+**Option 1.** To install and run *fram-demo* on your machine, follow these steps:
+
 1. Get *fram-demo* to your machine:
     - If you use git, clone *fram-demo* to your machine by running `git clone https://github.com/NVE/fram-demo.git` in your terminal and navigate to the project root folder `cd ./fram-demo`.
 
@@ -26,8 +27,20 @@ To install and run, follow these steps:
     
 4. Run `./poetry.exe install` - this should install packages to the virtual environment.
     
-5. Run `python ./framdemo/run_all.py` - this should run all demos and open a dashboard with result visualisation. Demo will take approximately 1 hour +/- if you run it on a CPU with 8 cores, because the demo will try to start 8 processes to run the model. Demo will use around 4,3 GB storage space on your computer. 
+5. Run `python ./framdemo/run_all.py` - this should run all demos and open a dashboard with result visualisation. Demo will take approximately 1 hour +/- if you run it on a CPU with 8 cores, because the demo will try to start 8 processes to run the model. Demo will use around 4,3 GB storage space on your computer.
 
+**Option 2.** If you have Docker on your machine, you can run the demo in a container by issuing the following command in a terminal window:
+
+    docker run -p 8080:8080 --name fram-demo nvefram/fram-demo:latest
+
+This command will download the latest version of *fram-demo* Docker image from Docker Hub and start running all demos in a container. When all demos are finished you will see a link to results dashboard in the terminal. Simply *Ctrl+Click* on the link or open your browser and enter `http://localhost:8080` to access the dashboard.
+
+To stop and remove the container issue the following commands in the terminal:
+
+    docker stop fram-demo
+    docker rm fram-demo
+
+Limitation of running the demo in a container is that you will not have access to the code, so you will not be able to make adjustments and run demo with your configuration.
 
 We hope you enjoy the demo and give us your feedback!
 
