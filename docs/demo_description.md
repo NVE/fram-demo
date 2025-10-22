@@ -19,9 +19,9 @@ The following countries are included into the demo case:
 {{ read_csv('docs/tables/countries.csv') }}
 
 ## Jules model
-Power system will be simulated using [open-source JulES model]({{ framlinks.jules }}){:target="_blank"}. The model will be installed automatically. 
+Power system will be simulated using [open-source JulES model]({{ framlinks.jules }}). The model will be installed automatically. 
 
-JulES uses [programming language Julia]({{ framlinks.julia }}){:target="_blank"} and it will also be installed on your PC for this demo if you do not have it yet. 
+JulES uses [programming language Julia]({{ framlinks.julia }}) and it will also be installed on your PC for this demo if you do not have it yet. 
 
 
 ## Demo steps
