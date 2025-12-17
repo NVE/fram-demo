@@ -51,6 +51,12 @@ def demo_1_download_dataset() -> None:
     send_info_event(demo_1_download_dataset, f"Downloading dataset from {url} (this might take a few minutes)")
     try:
         response = requests.get(api_url)
+
+        if response.status_code != 200:
+            message = f"Failed to download dataset from Zenodo. Status code: {response.status_code}, Response text: {response.text}" 
+            send_error_event(sender=demo_1_download_dataset, message=message)
+            raise RuntimeError(message)
+        
         files_data = response.json()
 
         for file_info in files_data["entries"]:
@@ -87,15 +93,17 @@ def _unzip_files_in_folder(dataset_folder: Path) -> None:
             with zipfile.ZipFile(file_path, "r") as zf:
                 for member in zf.namelist():
                     member_path = Path(member)
+
                     # Split the path and remove the first component (top-level folder)
                     parts = member_path.parts
-                    if len(parts) == 1:  # skip the top level
-                        continue
-                    # Ensure there's a top-level folder to remove
+
                     if len(parts) > 1:
-                        new_path = dataset_folder
-                        for part in parts[1:]:
-                            new_path = new_path / part
+                        folder_path = dataset_folder
+                        for part in parts[:-1]:
+                            folder_path = folder_path / part
+                        folder_path.mkdir(exist_ok=True, parents=True)
+                        new_path = folder_path / parts[-1]
+
                     else:
                         new_path = dataset_folder / member_path
 
@@ -103,8 +111,8 @@ def _unzip_files_in_folder(dataset_folder: Path) -> None:
                         continue
 
                     # Create parent directories if they don't exist
-                    if member.endswith("/") and not new_path.exists():
-                        new_path.mkdir(exist_ok=True)
+                    if member.endswith("/"):
+                        new_path.mkdir(exist_ok=True, parents=True)
                     elif not member.endswith("/"):
                         with new_path.open(mode="wb") as outfile:
                             outfile.write(zf.read(member))
