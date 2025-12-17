@@ -2,9 +2,7 @@
 Simple demo dashboard app.
 
 This app reads results from HDF5 files and displays them using Streamlit and Plotly.
-Pages are craeted for price information, regional results, and hydropower information for the demo purpose.
-
-1. Sets up infrastructure for the dashboard.
+Pages are created for price information, regional results, and hydropower information for the demo purpose.
 """
 
 import contextlib
@@ -36,6 +34,8 @@ if not h5_file_path_hydro.exists():
     st.error(message)
     raise FileNotFoundError(message)
 
+exogen_short = ["FRA", "BEL", "CHE", "LVA", "AUT", "SVK"]
+exogen = ["France", "Belgium", "Czech_Republic", "Latvia", "Austria", "Slovakia"]
 
 # Setting up Dashboard infrastructure
 st.title("Simple demo dashboard")
@@ -46,7 +46,9 @@ menu_option = st.sidebar.radio(
     options=["Price", "Volume", "Hydro"],
     index=0,
 )
-st.sidebar.markdown("See [demo description](https://nve.github.io/fram-demo/latest/demo_description/) for definition of cases base, detailed, modified and nordic")
+st.sidebar.markdown(
+    "See [demo description](https://nve.github.io/fram-demo/latest/demo_description/) for definition of cases base, detailed, modified and nordic",
+)
 st.sidebar.markdown("[About FRAM](https://nve.github.io/fram/)")
 
 st.sidebar.title("Filters")
@@ -64,7 +66,8 @@ if menu_option == "Price":
         weather_years = v_attrs.global_metadata["weather_years"]
         time_resolution = v_attrs.global_metadata["time_resolution"]
 
-    zones = sorted(list(set(key.split("/")[2] for key in keys)))
+    # zones = sorted(list(set(key.split("/")[2] for key in keys)))
+    zones = sorted(list(set(key.split("/")[2] for key in keys if key.split("/")[2] not in exogen_short)))
     solve_names = sorted(list(set(key.split("/")[1] for key in keys)))
 
     selected_solves = []
@@ -99,14 +102,14 @@ if menu_option == "Price":
         df = pd.DataFrame(yearly_prices)
         df = df.round(2)
         fig = px.bar(
-            df, 
-            x="Zone", 
-            y="EUR/MWh", 
-            color="Solve", 
+            df,
+            x="Zone",
+            y="EUR/MWh",
+            color="Solve",
             barmode="group",
-            title=f"Mean price per zone, grouped by selected solves",
+            title="Mean price per zone, grouped by selected solves",
         )
-        fig.update_layout(xaxis={'categoryorder': 'sum descending'})
+        fig.update_layout(xaxis={"categoryorder": "sum descending"})
         st.plotly_chart(fig, use_container_width=True)
 
     # daily prices plot
@@ -152,7 +155,7 @@ if menu_option == "Volume":
                 volume = store[key]["volume"].sum()
                 if volume == 0:
                     continue
-                if country.startswith("EX_"):
+                if country in exogen:
                     continue
                 production_data.append(
                     {
@@ -170,7 +173,7 @@ if menu_option == "Volume":
                 volume = store[key]["volume"].sum()
                 if volume == 0:
                     continue
-                if country.startswith("EX_"):
+                if country in exogen:
                     continue
                 production_data_tech.append(
                     {
@@ -185,7 +188,7 @@ if menu_option == "Volume":
                 volume = store[key]["volume"].sum()
                 if volume == 0:
                     continue
-                if country.startswith("EX_"):
+                if country in exogen:
                     continue
                 consumption_data.append(
                     {
@@ -229,8 +232,9 @@ if menu_option == "Volume":
 
     # may become duplicated due to uncategorized pump or transport loss demand (TODO find out)
     # this gives correct volumes
-    consumption_df = consumption_df.pivot_table(index=["Solve", "Country", "Category"],values="Volume", aggfunc="max")
-    consumption_df = consumption_df.reset_index()
+    if not consumption_df.empty:
+        consumption_df = consumption_df.pivot_table(index=["Solve", "Country", "Category"], values="Volume", aggfunc="max")
+        consumption_df = consumption_df.reset_index()
 
     df = pd.concat([production_df, consumption_df])
     countries = sorted(list(df[df["Volume"] > 0]["Country"].unique()))
@@ -259,25 +263,22 @@ if menu_option == "Volume":
         for solve in selected_solves:
             df = combined_data
             df = df[(df["Type"] == type_) & (df["Solve"] == solve)]
-            bar =go.Bar(
+            bar = go.Bar(
                 x=df["Country"],
-                y=df["Volume"].round(1),
+                y=df["Volume"].round(2),
                 name=f"{solve} {type_}",
                 offsetgroup=f"{solve} {type_}",
                 customdata=[solve, type_],
-                hovertemplate="<b>Country:</b> %{x}<br>" +
-                            "<b>Volume:</b> %{y:.1f} TWh/year<br>" +
-                            f"<b>Solve:</b> {solve}<br>" +
-                            f"<b>Type:</b> {type_}<extra></extra>"        
+                hovertemplate=f"<b>Country:</b> %{{x}}<br><b>Volume:</b> %{{y:.1f}} TWh/year<br><b>Solve:</b> {solve}<br><b>Type:</b> {type_}<extra></extra>",
             )
             bars.append(bar)
     layout = go.Layout(
-        title={'text': 'Production and Consumption for each country, grouped by selected solves'},
-        yaxis={'title': {'text': 'TWh/year'}},
-        barmode='group',
+        title={"text": "Production and Consumption for each country, grouped by selected solves"},
+        yaxis={"title": {"text": "TWh/year"}},
+        barmode="group",
     )
     fig = go.Figure(data=bars, layout=layout)
-    fig.update_layout(xaxis={'categoryorder': 'category ascending'})    
+    fig.update_layout(xaxis={"categoryorder": "category ascending"})
     st.plotly_chart(fig)
 
     # stacked production tech bar plot
@@ -290,25 +291,25 @@ if menu_option == "Volume":
         for tech in techs:
             df = production_tech_df
             df = df[(df["Technology"] == tech) & (df["Solve"] == solve)]
-            bar =go.Bar(
+            bar = go.Bar(
                 x=df["Country"],
-                y=df["Volume"].round(1),
+                y=df["Volume"].round(2),
                 name=f"{solve} {tech}",
                 offsetgroup=solve,
                 customdata=[solve, tech],
-                hovertemplate="<b>Country:</b> %{x}<br>" +
-                            "<b>Volume:</b> %{y:.1f} TWh/year<br>" +
-                            f"<b>Solve:</b> {solve}<br>" +
-                            f"<b>Technology:</b> {tech}<extra></extra>"        
+                hovertemplate="<b>Country:</b> %{x}<br>"
+                "<b>Volume:</b> %{y:.1f} TWh/year<br>"
+                f"<b>Solve:</b> {solve}<br>"
+                f"<b>Technology:</b> {tech}<extra></extra>",
             )
             bars.append(bar)
     layout = go.Layout(
-        title={'text': 'Production stacked on technology for each country, grouped by selected solves'},
-        yaxis={'title': {'text': 'TWh/year'}},
-        barmode='stack',
+        title={"text": "Production stacked on technology for each country, grouped by selected solves"},
+        yaxis={"title": {"text": "TWh/year"}},
+        barmode="stack",
     )
     fig = go.Figure(data=bars, layout=layout)
-    fig.update_layout(xaxis={'categoryorder': 'category ascending'})    
+    fig.update_layout(xaxis={"categoryorder": "category ascending"})
     st.plotly_chart(fig)
 
     # import and export bar chart
@@ -324,28 +325,26 @@ if menu_option == "Volume":
         for direction in ["Import", "Export"]:
             df = combined_data
             df = df[(df["Type"] == direction) & (df["Solve"] == solve)]
-            bar =go.Bar(
+            bar = go.Bar(
                 x=df["Trade Partner"],
                 y=df["Volume"].round(1),
                 name=f"{solve} {direction}",
                 offsetgroup=solve,
                 customdata=[solve, direction],
-                hovertemplate="<b>Trade:</b> %{y:.1f} TWh/year<br>" +
-                            f"<b>Type:</b> {direction}<br>" +
-                            f"<b>Solve:</b> {solve}<br>"
+                hovertemplate=f"<b>Trade:</b> %{{y:.1f}} TWh/year<br><b>Type:</b> {direction}<br><b>Solve:</b> {solve}<br>",
             )
             bars.append(bar)
     layout = go.Layout(
-        title={'text': f"{selected_country}'s trade with other countries, grouped by selected solves"},
-        yaxis={'title': {'text': 'TWh/year'}},
-        barmode='stack',
+        title={"text": f"{selected_country}'s trade with other countries, grouped by selected solves"},
+        yaxis={"title": {"text": "TWh/year"}},
+        barmode="stack",
     )
     fig = go.Figure(data=bars, layout=layout)
-    fig.update_layout(xaxis={'categoryorder': 'category ascending'})    
+    fig.update_layout(xaxis={"categoryorder": "category ascending"})
     st.plotly_chart(fig)
 
 
-if menu_option == "Hydro":    
+if menu_option == "Hydro":
     # read metadata
     solve_names = set()
     countries = set()
@@ -391,7 +390,7 @@ if menu_option == "Hydro":
         reservoir_capacity = dict()
         for selected_solve in selected_solves:
             data_key = f"{selected_solve}"
-            reservoir_capacity[data_key] = round(float(reservoir_capacity_df[data_key].max())/1000.0, 1)
+            reservoir_capacity[data_key] = round(float(reservoir_capacity_df[data_key].max()) / 1000.0, 1)
         new_columns = {k: f"{k} (capacity {v} TWh)" for k, v in reservoir_capacity.items()}
         reservoir_df.rename(columns=new_columns, inplace=True)
         reservoir_df *= 100
@@ -406,7 +405,7 @@ if menu_option == "Hydro":
 
     production_df: pd.DataFrame = hydro_data["production"]
     if not production_df.empty:
-        production_df /= 1000.0 # MW to GW
+        production_df /= 1000.0  # MW to GW
         production_fig = px.line(
             production_df,
             title=f"{selected_country}'s daily hydro production (GW), gouped by selected solve",
@@ -416,7 +415,7 @@ if menu_option == "Hydro":
 
     inflow_df: pd.DataFrame = hydro_data["inflow"]
     if not inflow_df.empty:
-        inflow_df *= (3.6 / 1000) # m3/s to GW
+        inflow_df *= 3.6 / 1000  # m3/s to GW
         inflow_fig = px.line(
             inflow_df,
             title=f"{selected_country}'s daily hydro inflow (GW), gouped by selected solve",
@@ -428,10 +427,9 @@ if menu_option == "Hydro":
     h5_file_path_detailed_hydro = du.DEMO_FOLDER / "dashboard_detailed_hydro.h5"
     modules_df = pd.DataFrame()
     series_df = pd.DataFrame()
-    with contextlib.suppress(Exception):
-        with pd.HDFStore(h5_file_path_detailed_hydro, mode="r") as store:
-            modules_df = store.get("/modules_df")
-            series_df = store.get("/series_df")
+    with contextlib.suppress(Exception), pd.HDFStore(h5_file_path_detailed_hydro, mode="r") as store:
+        modules_df = store.get("/modules_df")
+        series_df = store.get("/series_df")
 
     def get_module_name(s: str):
         parts = s.split("_")
@@ -462,14 +460,14 @@ if menu_option == "Hydro":
         df = df.reset_index(drop=True)
         df = df.iloc[:n]
         if not df.empty:
-            df["TWh/year"] = (df["Value"] / 1000.0).round(1)
+            df["TWh/year"] = (df["Value"] / 1000.0).round(2)
             fig = px.bar(
                 df,
                 x="Name",
                 y="TWh/year",
                 title=f"Top {n} generating modules in detailed solve",
             )
-            fig.update_xaxes(type='category', title="")
+            fig.update_xaxes(type="category", title="")
             st.plotly_chart(fig)
 
     # top n yearly pump
@@ -481,14 +479,14 @@ if menu_option == "Hydro":
         df = df.reset_index(drop=True)
         df = df.iloc[:n]
         if not df.empty:
-            df["TWh/year"] = (df["Value"] / 1000.0).round(1)
+            df["TWh/year"] = (df["Value"] / 1000.0).round(2)
             fig = px.bar(
                 df,
                 x="Name",
                 y="TWh/year",
                 title=f"Top {n} pumping modules in detailed solve",
             )
-            fig.update_xaxes(type='category', title="")
+            fig.update_xaxes(type="category", title="")
             st.plotly_chart(fig)
 
     # selected reservoir filling
@@ -512,7 +510,7 @@ if menu_option == "Hydro":
 
         fig = px.line(
             df,
-            title=f"Reservoir filling percentage for selected reservoirs from detailed solve",
+            title="Reservoir filling percentage for selected reservoirs from detailed solve",
         )
         fig.update_xaxes(title="3-hour blocks")
         fig.update_yaxes(title="", range=[0, 101])

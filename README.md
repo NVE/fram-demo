@@ -1,7 +1,7 @@
 # FRAM demo
 
 ## About
-See [FRAM demo](https://nve.github.io/fram-demo/) for description of the demo case.
+See [FRAM demo](https://nve.github.io/fram-demo/) for description of the demo case with JulES power market model and [the video of the demo model runs](https://www.youtube.com/watch?v=YmQZLke86vY).
 
 See [FRAM mainpage](https://nve.github.io/fram/) for general description of the FRAM system.
 

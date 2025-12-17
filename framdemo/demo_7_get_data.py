@@ -1,15 +1,15 @@
-def demo_7_get_data():
+def demo_7_get_data(solve_names=["base", "modified", "detailed", "modified_nordic"], detailed_solve_name="detailed") -> None:
     """
-    Writes results to h5 files that will be sent to dashboard.
-    
+    Write results to h5 files that will be sent to dashboard.
+
     1. Get prices for power nodes with existing price data in model for different solves and saves to dashboard_prices.h5 in demo folder.
     2. Get regional volumes for all countries in model for different solves and saves to dashboard_volumes.h5 in demo folder.
     3. Get hydro data for Norway, Sweden and Finland (*zones with hydropower data in model*) for different solves and saves to dashboard_hydro.h5 in demo folder.
     """
-    import numpy as np
-    import pandas as pd
     import datetime
 
+    import numpy as np
+    import pandas as pd
     from framcore import Model
     from framcore.aggregators import HydroAggregator, NodeAggregator
     from framcore.components import HydroModule, Node
@@ -18,12 +18,10 @@ def demo_7_get_data():
     from framcore.querydbs import CacheDB
     from framcore.timeindexes import AverageYearRange, DailyIndex, ModelYear, ProfileTimeIndex
     from framcore.utils import get_regional_volumes
-
     from framjules import JulES
 
     # import code written only for this demo (common names and useful functions)
     import framdemo.demo_utils as du
-
 
     # output file paths
     h5_file_path_prices = du.DEMO_FOLDER / "dashboard_prices.h5"
@@ -35,8 +33,6 @@ def demo_7_get_data():
     # ==========================
 
     # get all power nodes
-
-    solve_names = ["base", "modified", "detailed", "modified_nordic"]
 
     # read configured jules solver used in demo 3 from disk
     jules: JulES = du.load(du.DEMO_FOLDER / solve_names[0] / "solver.pickle")
@@ -211,13 +207,10 @@ def demo_7_get_data():
 
     send_info_event(None, message=f"Saved hydro data to {h5_file_path_hydro}")
 
-
     # detailed hydro data
-     
-    # input solve name and file paths
-    solve_name = "detailed"
 
-    solve_dir = du.DEMO_FOLDER / solve_name
+    # input solve name and file paths
+    solve_dir = du.DEMO_FOLDER / detailed_solve_name
     solver_path = solve_dir / "solver.pickle"
     model_path = solve_dir / "model.pickle"
 
@@ -239,10 +232,15 @@ def demo_7_get_data():
     model_year = data_period.get_start_time().isocalendar().year
     data_dim = ModelYear(model_year)
     scen_dim_yr = AverageYearRange(first_simulation_year, num_simulation_years)
-    scen_dim_market = ProfileTimeIndex(first_simulation_year, num_simulation_years, period_duration=datetime.timedelta(minutes=clearing_market_minutes), is_52_week_years=False)
+    scen_dim_market = ProfileTimeIndex(
+        first_simulation_year,
+        num_simulation_years,
+        period_duration=datetime.timedelta(minutes=clearing_market_minutes),
+        is_52_week_years=False,
+    )
 
     # get model
-    model: Model = du.load(du.DEMO_FOLDER / solve_name / "model.pickle")
+    model: Model = du.load(du.DEMO_FOLDER / detailed_solve_name / "model.pickle")
     db = CacheDB(model)
     data = model.get_data()
 
@@ -278,8 +276,8 @@ def demo_7_get_data():
         # TODO: replace dummy data with hydro_module.get_scenario_vector call
         water_value = 50
         # water_value = value.get_water_value().get_scenario_vector(db, scen_dim_yr, data_dim, f"{currency}/m3")
-        water_value = water_value / eneq_kwh_per_m3 # EUR/m3 to EUR/kWh
-        water_value = water_value * 1000.0          # EUR/kWh to EUR/MWh
+        water_value = water_value / eneq_kwh_per_m3  # EUR/m3 to EUR/kWh
+        water_value = water_value * 1000.0  # EUR/kWh to EUR/MWh
         rows.append((key, "ReservoirCapacityMm3", reservoir_cap_mm3))
         rows.append((key, "ReservoirCapacityGWh", reservoir_cap_gwh))
         rows.append((key, "EnergyEqDownstream", eneq_kwh_per_m3))
@@ -345,7 +343,7 @@ def demo_7_get_data():
     with pd.HDFStore(output_file_path, mode="w") as store:
         store.put(key="modules_df", value=modules_df)
         store.put(key="series_df", value=series_df)
-    
-    
+
+
 if __name__ == "__main__":
     demo_7_get_data()

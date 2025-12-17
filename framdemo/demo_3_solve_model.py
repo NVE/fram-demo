@@ -1,12 +1,13 @@
-def demo_3_solve_model(num_cpu_cores: int):
+def demo_3_solve_model(num_cpu_cores: int) -> None:
     """
     Solve model.
-    
+
     1. Read populated model from populate model demo from disk.
     2. Aggregate power nodes in model to elspot areas.
-    3. Create a JulES solver object.
-    4. Configure JulES.
-    5. Solve the model with JulES.
+    3. Aggregate hydropower modules
+    4. Create a JulES solver object.
+    5. Configure JulES.
+    6. Solve the model with JulES.
     """
     from framcore import Model
     from framcore.aggregators import HydroAggregator, NodeAggregator
@@ -24,13 +25,13 @@ def demo_3_solve_model(num_cpu_cores: int):
     model: Model = du.load(du.DEMO_FOLDER / "populated_model.pickle")
 
     # Aggregate power nodes in model to elspot areas.
-    node_aggregator = NodeAggregator("Power", "elspot", model_year, weekly_index)
+    node_aggregator = NodeAggregator("Power", "Elspot", model_year, weekly_index)
     node_aggregator.aggregate(model)
 
-    # Aggregate hydro power plants in model to elspot areas.
+    # Aggregate hydropower modules
     #   HydroAggregator will create one run-of-river hydropower module and one reservoir hydropower module per elspot area.
     #   We use different aggregations for Norway and for Sweden and Finland.
-    #   We use a ror_threshold of 0.6 for Norway and 0.38 for Sweden and Finland, which indicates what regulation factor
+    #   We use a ror_threshold of 0.55 for Norway and 0.38 for Sweden and Finland, which indicates what regulation factor
     #       a hydropower plant must have to be grouped as a reservoir hydropower plant.
     hydro_aggregator_norway = HydroAggregator(
         "EnergyEqDownstream",
@@ -103,12 +104,6 @@ def demo_3_solve_model(num_cpu_cores: int):
     # of opportunity cost of long term storage
     config.set_skipmax_days(21)
 
-    # JulES shall use aggregated hydro power in price prognosis problems used to
-    # HydroAggregator will create one run-of-river hydro plant and one hydro plant
-    # with reservoir for each power market zone
-    # hydro_aggregator = HydroAggregator("EnergyEqDownstream", model_year, weekly_index)
-    # config.set_short_term_aggregations([hydro_aggregator])
-
     # JulES shall use EUR as currency (e.g. for prices)
     config.set_currency("EUR")
 
@@ -128,7 +123,7 @@ def demo_3_solve_model(num_cpu_cores: int):
     config.set_commodity_units(commodity="CO2", stock_unit="t")
 
     # Install specified git branches for both JulES and TuLiPa
-    config.set_jules_version(jules_branch="master", tulipa_branch="redesign_mfw")
+    config.set_jules_version(jules_branch="master", tulipa_branch="master")
 
     # Tell JulES where to find Julia and where to install JulES
     if du.JULIA_PATH_EXE is not None:

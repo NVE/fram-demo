@@ -17,8 +17,8 @@ if __name__ == "__main__":
     # run demo 4, 5 and 6 in parallel
     procs: list[Process] = [
         Process(target=demo_4_modified_solve, args=(1,)),  # arg is num_cpu_cores
-        Process(target=demo_5_detailed_solve, args=(6, )), # arg is num_cpu_cores
-        Process(target=demo_6_nordic_solve, args=(1, )),   # arg is num_cpu_cores
+        Process(target=demo_5_detailed_solve, args=(6,)),  # arg is num_cpu_cores
+        Process(target=demo_6_nordic_solve, args=(1,)),  # arg is num_cpu_cores
     ]
     for p in procs:
         p.start()

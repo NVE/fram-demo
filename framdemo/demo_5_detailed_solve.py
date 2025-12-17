@@ -1,4 +1,4 @@
-def demo_5_detailed_solve(num_cpu_cores: int):
+def demo_5_detailed_solve(num_cpu_cores: int) -> None:
     """
     Use same model as demo 3 except with detailed hydro power instead of aggregated hydropower.
 
@@ -9,13 +9,9 @@ def demo_5_detailed_solve(num_cpu_cores: int):
     5. Create hydro power aggregators and put them into JulES via config
     6. Solve the model with JulES.
     """
-    from datetime import timedelta
-
-    import numpy as np
     from framcore import Model
     from framcore.aggregators import HydroAggregator, NodeAggregator
-    from framcore.timeindexes import ModelYear, OneYearProfileTimeIndex, WeeklyIndex
-    from framcore.timevectors import ListTimeVector
+    from framcore.timeindexes import ModelYear, WeeklyIndex
     from framjules import JulES
 
     import framdemo.demo_utils as du
@@ -38,7 +34,7 @@ def demo_5_detailed_solve(num_cpu_cores: int):
     weekly_index = WeeklyIndex(first_weather_year, num_weather_years)
 
     # Aggregate power nodes in model to elspot areas.
-    node_aggregator = NodeAggregator("Power", "elspot", model_year, weekly_index)
+    node_aggregator = NodeAggregator("Power", "Elspot", model_year, weekly_index)
     node_aggregator.aggregate(model)
 
     # The below is different from demo 3.
@@ -50,10 +46,10 @@ def demo_5_detailed_solve(num_cpu_cores: int):
     # config.set_short_term_aggregations([hydro_aggregator_norway, hydro_aggregator_sweden_finland])
     # below. This line, which will trigger detailed hydropower in all of JulES)
 
-    # Aggregate hydro power plants in model to elspot areas.
+    # Make HydroAggregators and give the aggregators to JulES
     #   HydroAggregator will create one run-of-river hydropower module and one reservoir hydropower module per elspot area.
     #   We use different aggregations for Norway and for Sweden and Finland.
-    #   We use a ror_threshold of 0.6 for Norway and 0.38 for Sweden and Finland, which indicates what regulation factor
+    #   We use a ror_threshold of 0.55 for Norway and 0.38 for Sweden and Finland, which indicates what regulation factor
     #       a hydropower plant must have to be grouped as a reservoir hydropower plant.
     hydro_aggregator_norway = HydroAggregator(
         "EnergyEqDownstream",

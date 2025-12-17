@@ -4,6 +4,7 @@ import inspect
 from copy import deepcopy
 from pathlib import Path
 
+
 class EventHandler:
     """Handle events from framcore.events.send_event."""
 

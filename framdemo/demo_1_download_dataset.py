@@ -11,18 +11,18 @@ def demo_1_download_dataset() -> None:
     """
     Download the FRAM demo dataset from zenodo to the demo folder and unzip zip files.
 
-    1. Dataset zip file is downloaded from https://zenodo.org/records/17294467 using REST api.
+    1. Dataset zip file is downloaded from https://doi.org/10.5281/zenodo.17294466 using REST api.
     2. File is unzipped in the dataset folder. The file is unzipped in such a way that it skips the first directory level, so all the db_xx directories should
        be placed in the same folder as the zip file was downloaded to.
     3. Zip file is deleted.
 
     """
-
     if du.DATASET_SOURCE is not None:
         assert isinstance(du.DATASET_SOURCE, Path) and du.DATASET_SOURCE.is_dir()
         import os
         import shutil
         from time import time
+
         t = time()
         send_info_event(demo_1_download_dataset, "downloading dataset")
         os.makedirs(du.DEMO_FOLDER / "database", exist_ok=False)
@@ -34,8 +34,8 @@ def demo_1_download_dataset() -> None:
             else:
                 shutil.copyfile(src=path, dst=du.DEMO_FOLDER / "database" / name)
         send_info_event(demo_1_download_dataset, f"time download dataset {round(time() - t, 3)} seconds")
-        return 
-    
+        return
+
     local_dataset_folder: Path = du.DEMO_FOLDER / "database"
 
     if local_dataset_folder.is_dir() and list(local_dataset_folder.iterdir()):
@@ -43,7 +43,7 @@ def demo_1_download_dataset() -> None:
         return
 
     zenodo_url = "https://zenodo.org/"
-    dataset_id = "17294467"
+    dataset_id = "17570105"
     api_url = zenodo_url + "api/records/" + dataset_id + "/files"  # Insert ID of dataset
     url = zenodo_url + "records/" + dataset_id
 

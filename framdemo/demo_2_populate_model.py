@@ -1,11 +1,12 @@
-def demo_2_populate_model():
+def demo_2_populate_model() -> None:
     """
     Populate model.
 
     1. Create model.
     2. Use populator to fill model with data
-    3. Save model to disk for use in upcoming demos.
-    4. Display model content before and after population.
+    3. Restrict release capacity of hydropower plants with a profile.
+    4. Save model to disk for use in upcoming demos.
+    5. Display model content before and after population.
     """
     from datetime import timedelta
 

@@ -1,14 +1,15 @@
-def demo_8_run_dashboard():
-    """Runs dashboard with results in your browser.
-    
+def demo_8_run_dashboard() -> None:
+    """
+    Run dashboard with results in your browser.
+
     1. Finds an available port on localhost.
     2. Makes sure a supported browser is available (chrome, msedge or firefox).
     2. Runs streamlit dashboard by data and plots in dashboard_app.py.
     """
     import subprocess
     import webbrowser
-    from pathlib import Path
     from os import environ
+    from pathlib import Path
 
     def get_available_port() -> int:
         """

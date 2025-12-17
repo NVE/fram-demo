@@ -1,4 +1,4 @@
-def demo_4_modified_solve(num_cpu_cores: int):
+def demo_4_modified_solve(num_cpu_cores: int) -> None:
     """
     Use same model as demo 3 except one change. Reuse solver settings.
 

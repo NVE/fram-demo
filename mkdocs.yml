@@ -47,7 +47,7 @@ extra:
   framlinks:
     nve: https://www.nve.no/english/
     fram: https://nve.github.io/fram/
-    dataset: https://zenodo.org/records/17294467
+    dataset: https://doi.org/10.5281/zenodo.17294466
     jules: https://github.com/NVE/JulES/
     julia: https://julialang.org/
 

@@ -1,4 +1,4 @@
-def demo_6_nordic_solve(num_cpu_cores: int):
+def demo_6_nordic_solve(num_cpu_cores: int) -> None:
     """
     Use same as demo 4, but here we only simulate nordic zones, using prices from demo 3 as exogenous prices.
 
