@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
     
     
       
@@ -29,7 +29,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.618322db.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
       
       
 
@@ -342,7 +342,7 @@
   <a href="#jules-model" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Jules model
+        JulES model
       
     </span>
   </a>
@@ -365,6 +365,17 @@
     <span class="md-ellipsis">
       
         Demo folders
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#demo-10-optimising-a-single-watershed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Demo 10 - optimising a single watershed
       
     </span>
   </a>
@@ -431,7 +442,7 @@
   <a href="#jules-model" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Jules model
+        JulES model
       
     </span>
   </a>
@@ -454,6 +465,17 @@
     <span class="md-ellipsis">
       
         Demo folders
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#demo-10-optimising-a-single-watershed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Demo 10 - optimising a single watershed
       
     </span>
   </a>
@@ -486,7 +508,7 @@
 <li><strong>BASE:</strong> Northern Europe aggregated with aggregated hydropower and elspot price areas </li>
 <li><strong>MODIFIED:</strong> the same as BASE but with demand in Norway increased by 20%</li>
 <li><strong>DETAILED:</strong> the same as BASE but with detailed hydropower in the Nordic region (Norway, Sweden, Finland, Denmark)</li>
-<li><strong>NORDIC:</strong> models the Nordic countries endogenously with aggregated hydropower and uses prices from BASE to model all other countries exogenously. Includes a 20% increase in demand in Norway.</li>
+<li><strong>MODIFIED_NORDIC:</strong> models the Nordic countries endogenously with aggregated hydropower and uses prices from BASE to model all other countries exogenously. Includes a 20% increase in demand in Norway.</li>
 </ul>
 <p>These cases correspond to demos 4-6 in the code, see overview of the demo steps below. </p>
 <p>You can run each demo step separately, or just run <code>run_all.py</code> to run all steps automatically. </p>
@@ -590,11 +612,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="jules-model">Jules model</h2>
+<h2 id="jules-model">JulES model</h2>
 <p>Power system will be simulated using <a href="https://github.com/NVE/JulES/">open-source JulES model</a>. The model will be installed automatically. </p>
 <p>JulES uses <a href="https://julialang.org/">programming language Julia</a> and it will also be installed on your PC for this demo if you do not have it yet. </p>
 <h2 id="demo-steps">Demo steps</h2>
-<p>The demo consists of 8 steps:</p>
+<p>The main demo consists of 8 steps:</p>
 <ol>
 <li>
 <p><strong>demo_1_download_dataset.py</strong> - downloads <a href="https://doi.org/10.5281/zenodo.17294466">demo dataset</a> into the database folder and unzipps files. </p>
@@ -612,13 +634,22 @@
 <p><strong>demo_5_detailed_solve.py</strong> - <strong>DETAILED case</strong> solves model with detailed hydropower data.</p>
 </li>
 <li>
-<p><strong>demo_6_nordic_solve.py</strong> - <strong>NORDIC case</strong> solves the Nordic model.</p>
+<p><strong>demo_6_nordic_solve.py</strong> - <strong>MODIFIED_NORDIC case</strong> solves the Nordic model.</p>
 </li>
 <li>
 <p><strong>demo_7_get_data.py</strong> - writes price, regional volumes and hydropower results to h5 format in order to send them to the dashboard.</p>
 </li>
 <li>
 <p><strong>demo_8_run_dashboard.py</strong> - runs the dashboard in a browser and visualizes results from h5 files.</p>
+</li>
+</ol>
+<p>New demos added in fram v.0.1.0:</p>
+<ol>
+<li>
+<p><strong>demo_9_edit_h5_profiles</strong> - demo of how to edit H5 files, <a href="https://nve.github.io/fram-data/latest/editing_profiles/">see description here</a>.</p>
+</li>
+<li>
+<p><strong>demo_10_watershed</strong> - demo of how to optimize a single watershed against a price using JulES model. See description below.</p>
 </li>
 </ol>
 <h2 id="demo-folders">Demo folders</h2>
@@ -633,10 +664,22 @@
 <li>base</li>
 <li>detailed</li>
 <li>modified</li>
-<li>nordic</li>
+<li>modified_nordic</li>
 </ul>
 <p>Results from all model solves will also be converted into h5-files that will be shown in the dashboard.</p>
 <p>See demo_utils.py if you want to set up your own paths.</p>
+<h2 id="demo-10-optimising-a-single-watershed">Demo 10 - optimising a single watershed</h2>
+<p>Optimizes a single watershed against a price.</p>
+<p>In this demo, we isolate a single watershed from the full energy model and set all power nodes to exogenous:
+1. Read detailed model (or populated model) and configured JulES solver used in demo 3.
+2. Isolate system to only include one watershed, her we choose "BORGUND_H".
+3. Aggregate power nodes in model to elspot areas.
+4. Set all power nodes to exogenous.
+5. Solve the model with JulES and reuse dashboard from previous demos (NB! Will overwrite dashboard data from previous demos).</p>
+<p>JulES has a "subsystem mode" which is triggered when there is only exogenous market nodes in the model.
+It will then optimize the system using only the stochastic subsystem problems (ignoring price prognosis problems
+and market clearing problems). The stochastic subsystem problems are two-stage stochastic programming problem
+solved with Benders decomposition.</p>
 
 
 
@@ -686,10 +729,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": [], "search": "../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": [], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>
