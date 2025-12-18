@@ -48,6 +48,7 @@ extra:
     nve: https://www.nve.no/english/
     fram: https://nve.github.io/fram/
     dataset: https://doi.org/10.5281/zenodo.17294466
+    data_edit_profiles: https://nve.github.io/fram-data/latest/editing_profiles/
     jules: https://github.com/NVE/JulES/
     julia: https://julialang.org/
 
