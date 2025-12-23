@@ -1,5 +1,7 @@
+import sys
 import zipfile
 from pathlib import Path
+from uuid import uuid4
 
 import requests
 from framcore.events import send_error_event, send_info_event, send_warning_event
@@ -48,17 +50,24 @@ def demo_1_download_dataset() -> None:
     url = zenodo_url + "records/" + dataset_id
 
     local_dataset_folder.mkdir(exist_ok=True, parents=True)
-    send_info_event(demo_1_download_dataset, f"Downloading dataset from {url} (this might take a few minutes)")
-    try:
-        response = requests.get(api_url)
+    send_info_event(demo_1_download_dataset, f"Getting dataset metadata from {url}")
 
-        if response.status_code != 200:
-            message = f"Failed to download dataset from Zenodo. Status code: {response.status_code}, Response text: {response.text}" 
-            send_error_event(sender=demo_1_download_dataset, message=message)
-            raise RuntimeError(message)
-        
+    user_agent = f"fram-demo-{uuid4()}"
+    response = requests.get(api_url, headers={"User-Agent": user_agent})
+
+    if response.status_code != 200:  # noqa: PLR2004
+        message = f"Failed to get dataset metadata from Zenodo. Status code: {response.status_code}, Response text: {response.text}"
+        send_error_event(sender=demo_1_download_dataset, message=message, exception_type_name="DownloadError", traceback="")
+        raise RuntimeError(message)
+
+    send_info_event(demo_1_download_dataset, "Dataset metadata received, resolving file to download.")
+
+    # Process metadata to find zip file to download
+    try:
         files_data = response.json()
 
+        existing_files = []
+        files_to_download = []
         for file_info in files_data["entries"]:
             file_url = file_info["links"]["self"]
             if not file_url.endswith(".zip"):
@@ -66,21 +75,56 @@ def demo_1_download_dataset() -> None:
             file_url = zenodo_url + file_url.split(zenodo_url + "api/")[1]
             file_path: Path = local_dataset_folder / file_info["key"]
             if file_path.exists() and zipfile.is_zipfile(str(file_path)):  # for if the file already exists as a valid zip file.
+                existing_files.append(file_path)
                 send_info_event(demo_1_download_dataset, f"Existing file {file_path} exists and is a valid zipfile. Skipping download.")
                 continue
-
-            # Download the file
-            with requests.get(file_url, stream=True) as r:
-                r.raise_for_status()
-                with file_path.open(mode="wb") as f:
-                    for chunk in r.iter_content(chunk_size=8192):
-                        f.write(chunk)
-
-    except requests.exceptions.RequestException as e:
-        message = f"An exception occured during download of dataset from Zenodo: {e}"
+            files_to_download.append((file_url, file_path))
+            break
+    except Exception as e:
+        message = f"An exception occured during processing of dataset metadata: {e}"
         send_error_event(sender=demo_1_download_dataset, message=message, exception_type_name=str(type(e)), traceback=e.__traceback__)
-    send_info_event(demo_1_download_dataset, "Dataset download finished.")
+        raise RuntimeError(message) from e
 
+    if len(existing_files) == 0 and len(files_to_download) == 0:
+        message = "No valid zip files found to download."
+        send_error_event(sender=demo_1_download_dataset, message=message,  exception_type_name="DownloadError", traceback="")
+        raise RuntimeError(message)
+
+    for file_url, file_path in files_to_download:
+        try:
+            # Download the file with simple progress output
+            with requests.get(file_url, stream=True, headers={"User-Agent": user_agent}) as request:
+                request.raise_for_status()
+                total = int(request.headers.get("Content-Length", 0))
+                downloaded = 0
+                chunk_size = 8192
+
+                with file_path.open(mode="wb") as file:
+                    for chunk in request.iter_content(chunk_size=chunk_size):
+                        if not chunk:
+                            continue
+                        file.write(chunk)
+                        downloaded += len(chunk)
+
+                        # Create progress message
+                        if total:
+                            percent = downloaded * 100 // total
+                            mb_downloaded = downloaded / (1024 * 1024)
+                            mb_total = total / (1024 * 1024)
+                            msg = f"\r\033[KDownloading {file_path.name}: {percent:3d}% ({mb_downloaded:.1f}/{mb_total:.1f} MB)"
+                        else:
+                            mb_downloaded = downloaded / (1024 * 1024)
+                            msg = f"\r\033[KDownloading {file_path.name}: {mb_downloaded:.1f} MB"
+                        sys.stdout.write(msg)
+                        sys.stdout.flush()
+            sys.stdout.write("\n")
+            sys.stdout.flush()
+        except requests.exceptions.RequestException as e:
+            message = f"An exception occured during processing of dataset: {e}"
+            send_error_event(sender=demo_1_download_dataset, message=message, exception_type_name=str(type(e)), traceback=e.__traceback__)
+            raise RuntimeError(message) from e
+
+    send_info_event(demo_1_download_dataset, "Dataset download finished.")
     _unzip_files_in_folder(local_dataset_folder)
 
 
